@@ -1,0 +1,80 @@
+---
+title: "Raport Analityczny: Eksploracyjna Analiza Danych Iris"
+subtitle: "Statyczny Dashboard z Wykresami w Python, Seaborn i LaTeX"
+author: "Generowane przez Quarto"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    code-fold: true
+    theme: luxie
+    figure-caption: true
+    width: 960
+  pdf:
+    engine: pdflatex
+style: |-
+  tables-off-canvas-shadow: none; 
+  font-size: 10pt;
+  font-family: "Times New Roman";
+  text-align: justify;
+  /* Wyrównanie podpisów i elementów wizualnych */
+  .caption-position-bottom {    
+    text-align: center;
+  }
+  img, figure {
+    display: block; 
+    margin-left: auto; 
+    margin-right: auto;
+  }
+
+---
+
+## Quarto
+  
+* Ten raport został wygenerowany z pomocą frameworku [Quarto](https://quarto.org/). Quarto to system ujednoliconego dokumentu, umożliwiający łączenie kodu programowego, języka znaczników (Markdown) i formuł matematycznych.
+
+> Struktura niniejszego raportu:
+> * Tekst/struktura
+> * Tabela Danych
+> * Wykresy (diagramy, pola) 
+> * Wskaźniki
+
+---
+
+## Zasady techniczne
+   
+* W tym raporcie opisujemy najważniejsze statystyczne dane, a także analizę zbioru danych.
+
+**Nazwa danych:** Dane Iris 
+**Źródło do danych:** [Dane Iris](https://en.wikipedia.org/wiki/Iris_flower_data_set) 
+* Wykorzystano także dodatkowe rozszerzenia tego raportu, w tym Quarto, Python i Seaborn.
+
+* Używamy pakietu $LaTeX$ do tabel i rysunków Seaborn.
+
+---
+
+## Indeks Danych
+
+```python
+# Ustawienie identyfikatora dla zbioru danych
+dataset_name = 'iris' 
+
+import seaborn as sns
+import pandas as pd
+
+# Wczytanie zbioru danych Iris
+df = sns.load_dataset(dataset_name)
+
+print("Podgląd pierwszych 5 wierszy:")
+print(df.head())
+
+# Statystyki opisowe
+print("\\nStatystyki opisowe:")
+print(df.describe())
+
+# Liczba wystąpień dla każdej klasy irysa
+print("\\nRozkład gatunków (species):")
+counts = df.groupby('species').size().reset_index(name='count')
+print(counts)
+
+

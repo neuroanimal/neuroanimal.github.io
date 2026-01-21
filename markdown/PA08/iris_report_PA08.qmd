@@ -1,0 +1,91 @@
+---
+title: "Raport Analityczny: Eksploracyjna Analiza Danych Iris"
+subtitle: "Statyczny Dashboard z Wykresami w Python, Seaborn i LaTeX"
+author: "neuroanimal"
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    code-fold: true
+    theme: luxie
+    figure-caption: true
+    width: 960
+  pdf:
+    engine: pdflatex
+style: |-
+  tables-off-canvas-shadow: none; 
+  font-size: 10pt;
+  font-family: "Times New Roman";
+  text-align: justify;
+  /* Wyrównanie podpisów i elementów wizualnych */
+  .caption-position-bottom {    
+    text-align: center;
+  }
+  img, figure {
+    display: block; 
+    margin-left: auto; 
+    margin-right: auto;
+  }
+
+---
+
+## 🌸 Wprowadzenie do Analizy Danych Iris
+
+Niniejszy raport zawiera eksploracyjną analizę danych na temat zbioru **Iris**, jednego z najbardziej znanych i najczęściej używanych zbiorów danych w uczeniu maszynowym i statystyce. Zbiór zawiera pomiary długości i szerokości płatków (petals) oraz działek kielicha (sepals) dla trzech gatunków irysów: *Iris setosa*, *Iris versicolor* oraz *Iris virginica*.
+
+Celem raportu jest wizualizacja i podsumowanie kluczowych statystyk opisowych, ze szczególnym uwzględnieniem rozróżnienia gatunków na podstawie zmierzonych cech.
+
+---
+
+## Indeks Danych
+
+```python
+# Ustawienie identyfikatora dla zbioru danych
+dataset_name = 'iris' 
+
+import seaborn as sns
+import pandas as pd
+
+# Wczytanie zbioru danych Iris
+df = sns.load_dataset(dataset_name)
+
+print("Podgląd pierwszych 5 wierszy:")
+print(df.head())
+
+# Statystyki opisowe
+print("\\nStatystyki opisowe:")
+print(df.describe())
+
+# Liczba wystąpień dla każdej klasy irysa
+print("\\nRozkład gatunków (species):")
+counts = df.groupby('species').size().reset_index(name='count')
+print(counts)
+
+# Liczba wystąpień dla każdej klasy irysa
+print("\nRozkład gatunków (species):")
+counts = df.groupby('species').size().reset_index(name='count')
+print(counts)
+```
+
+---
+
+## 📈 Wykresy i Wizualizacje
+
+Wykorzystujemy pakiet **Seaborn** do wizualizacji rozkładu i korelacji cech.
+
+### Wykres 1: Rozkład Cech (Violin Plot)
+
+Wykres skrzypcowy jest przydatny do wizualizacji rozkładu cech dla każdego gatunku.
+
+```{python}
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(12, 8))
+sns.violinplot(x='species', y='petal_length', data=df)
+plt.title('Rozkład długości płatka (Petal Length) według gatunku')
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.show()
+
+```
+
+

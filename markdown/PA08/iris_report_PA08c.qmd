@@ -1,0 +1,131 @@
+---
+title: "Raport Analityczny: Eksploracyjna Analiza Danych Iris"
+subtitle: "Statyczny Dashboard z Wykresami w Python, Seaborn i LaTeX"
+author: "Generowane przez Gemini AI"
+date: "`r Sys.Date()`"
+execute:
+  engine: knitr
+format: 
+  html:
+    toc: true
+    code-fold: true
+    theme: luxie
+    figure-caption: true
+    width: 960
+  pdf:
+    engine: pdflatex
+style: |-
+  tables-off-canvas-shadow: none;
+  font-size: 10pt;
+  font-family: "Times New Roman";
+  text-align: justify;
+  /* Wyrownanie podpisow i elementow wizualnych */
+  .caption-position-bottom {
+    text-align: center;
+  }
+  img, figure {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+---
+
+## 🌿 Wprowadzenie do Analizy Danych Iris
+
+Niniejszy raport zawiera eksploracyjna analize danych na temat zbioru **Iris**, jednego z najbardziej znanych i najczesciej usywanych zbiorow danych w uczeniu maszynowym i statystyce. Zbior zawiera pomiary dlugosci i szerokosci platkow (petals) oraz dzialek kielicha (sepals) dla trzech gatunkow irysow: *Iris setosa*, *Iris versicolor* oraz *Iris virginica*.
+
+Celem raportu jest wizualizacja i podsumowanie kluczowych statystyk opisowych, ze szczegolnym uwzglednieniem rozroznienia gatunkow na podstawie zmierzonych cech.
+
+---
+
+## 📊 Indeks Danych
+
+```{python}
+dataset_name = 'iris' 
+
+import seaborn as sns
+import pandas as pd
+
+df = sns.load_dataset(dataset_name)
+
+print("Podglad pierwszych 5 wierszych:")
+print(df.head())
+
+print("\nStatystyki opisowyche:")
+# Konwersja tabeli Pandas DataFrame do formatu Markdown/LaTeX
+print(df.describe().to_markdown(index=True))
+
+print("\nRozklad gatunkow (species):")
+counts = df.groupby('species').size().reset_index(name='count')
+print(counts)
+```
+
+---
+
+## 📉 Wykresy i Wizualizacje
+
+W celu doglebnej analizy wykorzystujemy zaawansowane wizualizacje (Seaborn i Matplotlib), zawierajace elementy statystyki opisowej i wzory LaTeX w tytulach.
+
+### Wykres 1: Porownanie Rozkladow Dlugosci Dzialki Kielicha (Violin Plot)
+
+Wykres skrzypcowy z wizualizacja kwartyli. Jest to najlepsza metoda do porownania rozkladu dlugosci dzialki kielicha (Sepal Length) miedzy gatunkami.
+
+```{python}
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(8, 6))
+sns.violinplot(x='species', y='sepal_length', data=df, inner='quartile', palette='pastel')
+plt.title(r'Porownanie Rozkladow Dlugosci Dzialki Kielicha. Mediana (Kwantyl Q_2): Q_2(\mathbf{X}) = \operatorname{argmin}_{m} \sum |x_i - m|')
+plt.xlabel(r'Gatunek Iris ($C$)')
+plt.ylabel(r'Dlugosc Dzialki Kielicha ($L_s$)')
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.show()
+```
+
+### Wykres 2: Macierz Korelacji Par Cech (Pair Plot)
+
+Macierz wykresow rozrzutu pozwala na szybka identyfikacje cech o duzej sile separowalnosci oraz na obserwacje korelacji wewnatrz gatunkow.
+
+```{python}
+import matplotlib.pyplot as plt
+sns.pairplot(df, hue='species', markers=['o', 's', 'D'])
+plt.suptitle('Wplyw Regularyzacji na Krzywa Uczenia w Modelu', y=1.02)
+plt.show()
+```
+
+### Wykres 3: Separowalnosc Klas i Srodki Ciezkosci (Scatter Plot z Centroidami)
+
+Wykres rozrzutu dlugosci i szerokosci platka (kluczowe cech) z wizualizacja srodka ciezkosci (Centroid) dla kazdej klasy.
+
+```{python}
+from sklearn.cluster import KMeans
+import numpy as np
+
+X = df[['petal_length', 'petal_width']]
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+kmeans.fit(X)
+centroids = pd.DataFrame(kmeans.cluster_centers, columns=['petal_length', 'petal_width'])
+# Przypisanie gatunkow na podstawie polozenia
+centroids['species'] = ['setosa', 'versicolor', 'virginica']
+
+plt.figure(figsize=(10, 8))
+sns.scatterplot(x='petal_length', y='petal_width', hue='species', data=df, s=100, alpha=0.6, palette='viridis')
+plt.scatter(centroids['petal_length'], centroids['petal_width'], marker='X', s=200, color='black', label='Centroid')
+plt.title(r'Separowalnosc Klas: Dlugosc vs Szerokosc Platka. Centroid (Srodek Ciezkosci Klasy k): \mu_k = \frac{1}{N_k}\sum_{i \in \cal{C}_k} \mathbf{x}_i')
+plt.xlabel(r'Dlugosc Platka ($L_P$)')
+plt.ylabel(r'Szerokosc Platka ($W_P$)')
+plt.legend(title=r'Gatunek ($C$)')
+plt.grid(linestyle='--', alpha=0.6)
+plt.show()
+```
+
+---
+
+## 🔍 Wnioski i Podsumowanie Analizy
+
+Wizualna i statystyczna analiza zbioru danych Iris potwierdzila kluczowe obserwacje w kontekscie klasyfikacji:
+
+* **Iris setosa** (Separacja): Gatunek jest idealnie separowalny od pozostalych. Jego Centroid na wykresie z centroidami (Wykres 3) jest silnie oddzielony od pozostalych grup, co swiadczy o jego unikalnych" dlugosci platkow.
+* **Mediana i Rozklad**: Wykres skrzypcowy (Wykres 1) z wizualizacja mediany (Kwantyl Q2) pokazuje, ze wartosci mediany Sepal Length rosna wzdluz gatunku (*setosa* < *versicolor* < *virginica*).
+* **Iris versicolor i Iris virginica** (Nakladanie sie): Te dwa gatunki sa trudniejsze do rozroznienia. Ich Centroidy na Wykresie 3 znajduja sie blisko siebie, co oznacza, ze do ich separacji potrzebne jest zastosowanie bardziej zaawansowanych algorytmow klasyfikacji (np. SVM lub LDA).
+* **Korelacja**: Pair Plot (Wykres 2) potwierdza, ze dlugosc i szerokosc platka sa hilnie skorelowane i sa cechami o najwiekszym znaczeniu dla rozdzielenia klas.

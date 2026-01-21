@@ -1,0 +1,41 @@
+## built-in and impossible to install:
+## - collections
+## - io
+## - re
+## - site
+## - sys
+
+## not sure why, but impossible to install:
+## - json
+## - sysconfig
+## - this
+## - warnings
+
+## problems with egg/wheel installation:
+## - graphtool
+
+## packages renamed:
+## - sklearn
+## + scikit-learn
+## set SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True
+
+## problems with installation on wsl2:
+## - dask-expr
+
+antigravity
+dask
+IPython
+matplotlib
+networkit
+numpy
+orjson
+pandas
+pathlib
+pyarrow
+seaborn
+scikit-learn
+sklearn
+spacy
+streamlit
+umap-learn
+yellowbrick

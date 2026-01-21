@@ -1,0 +1,270 @@
+This is LuaTeX, Version 1.10.0 (TeX Live 2019/Debian)  (format=lualatex 2025.11.29)  29 NOV 2025 23:23
+ restricted system commands enabled.
+**iris_report.tex
+(./iris_report.tex
+LaTeX2e <2020-02-02> patch level 2
+[\directlua]:1: module 'luaotfload-main' not found:
+	no field package.preload['luaotfload-main']
+	[kpse lua searcher] file not found: 'luaotfload-main'
+	[kpse C searcher] file not found: 'luaotfload-main'
+Error in luaotfload: reverting to OT1 L3 programming layer <2020-02-14> (/usr/s
+hare/texlive/texmf-dist/tex/latex/koma-script/scrartcl.cls
+Document Class: scrartcl 2020/01/24 v3.29 KOMA-Script document class (article)
+(/usr/share/texlive/texmf-dist/tex/latex/koma-script/scrkbase.sty
+Package: scrkbase 2020/01/24 v3.29 KOMA-Script package (KOMA-Script-dependent ba
+sics and keyval usage)
+(/usr/share/texlive/texmf-dist/tex/latex/koma-script/scrbase.sty
+Package: scrbase 2020/01/24 v3.29 KOMA-Script package (KOMA-Script-independent b
+asics and keyval usage)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks14
+) (/usr/share/texlive/texmf-dist/tex/latex/koma-script/scrlfile.sty
+Package: scrlfile 2020/01/24 v3.29 KOMA-Script package (loading files)
+))) (/usr/share/texlive/texmf-dist/tex/latex/koma-script/tocbasic.sty
+Package: tocbasic 2020/01/24 v3.29 KOMA-Script package (handling toc-files)
+\scr@dte@tocline@numberwidth=\skip47
+\scr@dte@tocline@numbox=\box45
+)
+Package tocbasic Info: omitting babel extension for `toc'
+(tocbasic)             because of feature `nobabel' available
+(tocbasic)             for `toc' on input line 137.
+Class scrartcl Info: File `scrsize11pt.clo' used instead of
+(scrartcl)           file `scrsize11.clo' to setup font sizes on input line 2212
+.
+(/usr/share/texlive/texmf-dist/tex/latex/koma-script/scrsize11pt.clo
+File: scrsize11pt.clo 2020/01/24 v3.29 KOMA-Script font size class option (11pt)
+
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 11
+2.
+(/usr/share/texmf/tex/latex/lm/ot1lmr.fd
+File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)) (/usr/share/texlive/texmf-dist/tex/latex/koma-script/typearea.sty
+Package: typearea 2020/01/24 v3.29 KOMA-Script package (type area)
+\ta@bcor=\skip48
+\ta@div=\count163
+Package typearea Info: You've used standard option `letterpaper'.
+(typearea)             This is correct!
+(typearea)             Internally I'm using `paper=letter'.
+(typearea)             If you'd like to set the option with \KOMAoptions,
+(typearea)             you'd have to use `paper=letter' there
+(typearea)             instead of `letterpaper', too.
+\ta@hblk=\skip49
+\ta@vblk=\skip50
+\ta@temp=\skip51
+\footheight=\skip52
+Package typearea Info: These are the values describing the layout:
+(typearea)             DIV  = 11
+(typearea)             BCOR = 0.0pt
+(typearea)             \paperwidth      = 614.295pt
+(typearea)              \textwidth      = 446.76004pt
+(typearea)              DIV departure   = -14%
+(typearea)              \evensidemargin = 11.49748pt
+(typearea)              \oddsidemargin  = 11.49748pt
+(typearea)             \paperheight     = 794.96999pt
+(typearea)              \textheight     = 582.20026pt
+(typearea)              \topmargin      = -37.40001pt
+(typearea)              \headheight     = 17.0pt
+(typearea)              \headsep        = 20.40001pt
+(typearea)              \topskip        = 11.0pt
+(typearea)              \footskip       = 47.6pt
+(typearea)              \baselineskip   = 13.6pt
+(typearea)              on input line 1719.
+)
+\c@part=\count164
+\c@section=\count165
+\c@subsection=\count166
+\c@subsubsection=\count167
+\c@paragraph=\count168
+\c@subparagraph=\count169
+\scr@dte@section@maxnumwidth=\skip53
+Class scrartcl Info: using compatibility default `runin=bysign'
+(scrartcl)           for `\section on input line 4723.
+Class scrartcl Info: using compatibility default `afterindent=bysign'
+(scrartcl)           for `\section on input line 4723.
+\scr@dte@part@maxnumwidth=\skip54
+Class scrartcl Info: using compatibility default `afterindent=false'
+(scrartcl)           for `\part on input line 4731.
+\scr@dte@subsection@maxnumwidth=\skip55
+Class scrartcl Info: using compatibility default `runin=bysign'
+(scrartcl)           for `\subsection on input line 4741.
+Class scrartcl Info: using compatibility default `afterindent=bysign'
+(scrartcl)           for `\subsection on input line 4741.
+\scr@dte@subsubsection@maxnumwidth=\skip56
+Class scrartcl Info: using compatibility default `runin=bysign'
+(scrartcl)           for `\subsubsection on input line 4751.
+Class scrartcl Info: using compatibility default `afterindent=bysign'
+(scrartcl)           for `\subsubsection on input line 4751.
+\scr@dte@paragraph@maxnumwidth=\skip57
+Class scrartcl Info: using compatibility default `runin=bysign'
+(scrartcl)           for `\paragraph on input line 4761.
+Class scrartcl Info: using compatibility default `afterindent=bysign'
+(scrartcl)           for `\paragraph on input line 4761.
+\scr@dte@subparagraph@maxnumwidth=\skip58
+Class scrartcl Info: using compatibility default `runin=bysign'
+(scrartcl)           for `\subparagraph on input line 4771.
+Class scrartcl Info: using compatibility default `afterindent=bysign'
+(scrartcl)           for `\subparagraph on input line 4771.
+\abovecaptionskip=\skip59
+\belowcaptionskip=\skip60
+\c@pti@nb@sid@b@x=\box46
+Package tocbasic Info: omitting babel extension for `lof'
+(tocbasic)             because of feature `nobabel' available
+(tocbasic)             for `lof' on input line 6002.
+\scr@dte@figure@maxnumwidth=\skip61
+\c@figure=\count170
+Package tocbasic Info: omitting babel extension for `lot'
+(tocbasic)             because of feature `nobabel' available
+(tocbasic)             for `lot' on input line 6014.
+\scr@dte@table@maxnumwidth=\skip62
+\c@table=\count171
+Class scrartcl Info: Redefining `\numberline' on input line 6178.
+\bibindent=\dimen134
+) (/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: luatex.def on input line 225.
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/luatex.def
+File: luatex.def 2018/01/08 v1.0l Graphics/color driver for luatex
+)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
+Package xcolor Info: Model `RGB' extended on input line 1364.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/dvipsnam.def
+File: dvipsnam.def 2016/06/17 v3.0m Driver-dependent file (DPC,SPQR)
+) (/usr/share/texlive/texmf-dist/tex/latex/xcolor/svgnam.def
+File: svgnam.def 2016/05/11 v2.12 Predefined colors according to SVG 1.1 (UK)
+) (/usr/share/texlive/texmf-dist/tex/latex/xcolor/x11nam.def
+File: x11nam.def 2016/05/11 v2.12 Predefined colors according to Unix/X11 (UK)
+)) (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2020/01/20 v2.17e AMS math features
+\@mathmargin=\skip63
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01 AMS text
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks15
+\ex@=\dimen135
+)) (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen136
+) (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count172
+LaTeX Info: Redefining \frac on input line 227.
+\uproot@=\count173
+\leftroot@=\count174
+LaTeX Info: Redefining \overline on input line 389.
+\classnum@=\count175
+\DOTSCASE@=\count176
+LaTeX Info: Redefining \ldots on input line 486.
+LaTeX Info: Redefining \dots on input line 489.
+LaTeX Info: Redefining \cdots on input line 610.
+\Mathstrutbox@=\box47
+\strutbox@=\box48
+\big@size=\dimen137
+LaTeX Font Info:    Redeclaring font encoding OML on input line 733.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 734.
+\macc@depth=\count177
+\c@MaxMatrixCols=\count178
+\dotsspace@=\muskip16
+\c@parentequation=\count179
+\dspbrk@lvl=\count180
+\tag@help=\toks16
+\row@=\count181
+\column@=\count182
+\maxfields@=\count183
+\andhelp@=\toks17
+\eqnshift@=\dimen138
+\alignsep@=\dimen139
+\tagshift@=\dimen140
+\tagwidth@=\dimen141
+\totwidth@=\dimen142
+\lineht@=\dimen143
+\@envbody=\toks18
+\multlinegap=\skip64
+\multlinetaggap=\skip65
+\mathdisplay@stack=\toks19
+LaTeX Info: Redefining \[ on input line 2859.
+LaTeX Info: Redefining \] on input line 2860.
+) (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+)) (/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2019/11/07 v1.0c TeX engine tests
+) (/usr/share/texlive/texmf-dist/tex/latex/unicode-math/unicode-math.sty (/usr/
+share/texlive/texmf-dist/tex/latex/l3kernel/expl3.sty
+Package: expl3 2020-02-14 L3 programming layer (loader) 
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
+File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
+\l__kernel_color_stack_int=\count184
+\l__pdf_internal_box=\box49
+))
+Package: unicode-math 2020/01/31 v0.8q Unicode maths in XeLaTeX and LuaLaTeX
+(/usr/share/texlive/texmf-dist/tex/latex/unicode-math/unicode-math-luatex.sty
+Package: unicode-math-luatex 2020/01/31 v0.8q Unicode maths in XeLaTeX and LuaLa
+TeX
+(/usr/share/texlive/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
+Package: xparse 2020-02-14 L3 Experimental document command parser
+\l__xparse_current_arg_int=\count185
+\g__xparse_grabber_int=\count186
+\l__xparse_m_args_int=\count187
+\l__xparse_v_nesting_int=\count188
+) (/usr/share/texlive/texmf-dist/tex/latex/l3packages/l3keys2e/l3keys2e.sty
+Package: l3keys2e 2020-02-14 LaTeX2e option processing using LaTeX3 keys
+) (/usr/share/texlive/texmf-dist/tex/latex/fontspec/fontspec.sty
+Package: fontspec 2020/02/03 v2.7h Font selection for XeLaTeX and LuaLaTeX
+Lua module: fontspec 2020/02/03 2.7h Font selection for XeLaTeX and LuaLaTeX (/
+usr/share/texlive/texmf-dist/tex/latex/fontspec/fontspec-luatex.sty
+Package: fontspec-luatex 2020/02/03 v2.7h Font selection for XeLaTeX and LuaLaTe
+X
+\l__fontspec_script_int=\count189
+\l__fontspec_language_int=\count190
+\l__fontspec_strnum_int=\count191
+\l__fontspec_tmp_int=\count192
+\l__fontspec_tmpa_int=\count193
+\l__fontspec_tmpb_int=\count194
+\l__fontspec_tmpc_int=\count195
+\l__fontspec_em_int=\count196
+\l__fontspec_emdef_int=\count197
+\l__fontspec_strong_int=\count198
+\l__fontspec_strongdef_int=\count199
+\l__fontspec_tmpa_dim=\dimen144
+\l__fontspec_tmpb_dim=\dimen145
+\l__fontspec_tmpc_dim=\dimen146
+(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2020/02/11 v2.0o Standard LaTeX package
+! Font \TU/lmr/m/n/10.95=[lmroman10-regular]:+tlig; at 10.95pt not loadable: met
+ric data not found or bad.
+<to be read again> 
+relax 
+l.112 ...lt\familydefault\seriesdefault\shapedefault
+                                                  
+
+Here is how much of LuaTeX's memory you used:
+ 6241 strings out of 481365
+ 100000,552014 words of node,token memory allocated
+ 395 words of node memory still in use:
+   3 hlist, 1 rule, 1 dir, 55 glue_spec, 3 if_stack, 1 write, 1 pdf_colorstack n
+odes
+   avail lists: 2:18,3:2,5:1,7:29,9:2,11:3
+ 23236 multiletter control sequences out of 65536+600000
+ 25 fonts using 3168895 bytes
+ 58i,1n,60p,10124b,248s stack positions out of 5000i,500n,10000p,200000b,100000s
+!  ==> Fatal error occurred, no output PDF file produced!

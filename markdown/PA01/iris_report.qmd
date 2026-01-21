@@ -1,0 +1,40 @@
+---
+title: "Raport Analityczny: Eksploracyjna Analiza Danych Iris"
+subtitle: "Statyczny Dashboard z Wykresami w Python, Seaborn i LaTeX"
+author: "Generowane przez Quarto"
+date: "`r Sys.Date()`"
+format: 
+  html:
+    toc: true # Spis treści
+    code-fold: true # Możliwość ukrycia kodu
+    theme: cosmo
+    css: styles.css # Opcjonalny plik CSS
+---
+
+```{python}
+# | label: setup
+# | include: false
+# -----------------------------------------------------------
+# KONFIGURACJA PYTHON, SEABORN ORAZ LATEX
+# -----------------------------------------------------------
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Ustawienie opcji renderingu LaTeX dla Matplotlib
+latex_packages = [
+    r'\usepackage[T1]{fontenc}', r'\usepackage[utf8]{inputenc}', 
+    r'\usepackage{amsmath}', r'\usepackage{lmodern}', 
+    r'\usepackage[polish]{babel}', r'\usepackage{graphicx}'
+]
+
+plt.rcParams.update({
+    "text.usetex": True,
+    "mathtext.fontset": "cm",
+    "text.latex.preamble": '\n'.join(latex_packages)
+})
+
+# Wczytanie danych
+iris = sns.load_dataset("iris")
+
+
