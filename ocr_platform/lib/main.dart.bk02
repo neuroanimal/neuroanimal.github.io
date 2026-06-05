@@ -1,0 +1,78 @@
+import 'package:flutter/material.dart';
+
+import 'domain/ocr_engine_type.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      title: 'OCR Platform',
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  OcrEngineType selectedEngine = OcrEngineType.onnx;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('OCR Platform'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Backend OCR',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            DropdownButton<OcrEngineType>(
+              value: selectedEngine,
+              items: OcrEngineType.values.map((engine) {
+                return DropdownMenuItem(
+                  value: engine,
+                  child: Text(engine.name),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedEngine = value!;
+                });
+              },
+            ),
+
+            const SizedBox(height: 30),
+
+            Text(
+              'Selected: ${selectedEngine.name}',
+              style: const TextStyle(fontSize: 18),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

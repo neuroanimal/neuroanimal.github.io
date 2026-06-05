@@ -1,0 +1,151 @@
+import 'package:flutter/material.dart';
+
+import '../domain/ocr_engine_type.dart';
+import '../domain/ocr_engine_factory.dart';
+import '../state/app_state.dart';
+
+import 'dart:typed_data';
+import 'package:image_picker/image_picker.dart';
+import '../domain/ocr_pipeline.dart';
+
+class HomePage extends StatefulWidget {
+  final AppState state;
+  const HomePage({
+    super.key,
+    required this.state,
+  });
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  // OcrEngineType selectedEngine = OcrEngineType.onnx;
+  final _picker = ImagePicker();
+  final _pipeline = OcrPipeline();
+
+  Future<void> _pickImage() async {
+    final XFile? file = await _picker.pickImage(
+      source: ImageSource.gallery,
+    );
+
+    if (file == null) return;
+
+    final bytes = await file.readAsBytes();
+
+    await _pipeline.run(
+      state: widget.state,
+      imageBytes: bytes,
+    );
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // print('INIT STATE');
+    debugPrint('INIT STATE');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('OCR Platform'),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Backend OCR',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              DropdownButton<OcrEngineType>(
+                // value: selectedEngine,
+                value: widget.state.selectedEngine,
+                items: OcrEngineType.values.map((engine) {
+                  return DropdownMenuItem(
+                    value: engine,
+                    child: Text(engine.name),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    // selectedEngine = value!;
+                    widget.state.selectedEngine = value!;
+                  });
+                },
+              ),
+
+              const SizedBox(height: 30),
+
+              Text(
+                // 'Selected: ${selectedEngine.name}',
+                'Selected: ${widget.state.selectedEngine.name}',
+                style: const TextStyle(fontSize: 18),
+              ),
+
+              const SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: () async {
+                  final engine = OcrEngineFactory.create(
+                    widget.state.selectedEngine,
+                  );
+
+                  final result = await engine.recognizeText(
+                    Uint8List(0),
+                  );
+
+                  setState(() {
+                    widget.state.recognizedText = result;
+                  });
+                },
+                child: const Text('Run OCR'),
+              ),
+
+              const SizedBox(height: 20),
+
+              Text(
+                widget.state.recognizedText,
+              ),
+
+              const SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: _pickImage,
+                child: const Text('Pick image'),
+              ),
+
+              const SizedBox(height: 20),
+
+              if (widget.state.imageBytes != null)
+                Image.memory(
+                  widget.state.imageBytes!,
+                  height: 200,
+                  fit: BoxFit.contain,
+                ),
+
+              const SizedBox(height: 20),
+
+              Text(
+                widget.state.ocrResult ?? 'No OCR result yet',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
