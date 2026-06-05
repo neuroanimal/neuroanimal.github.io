@@ -1,0 +1,22 @@
+key,PL,EN,FR,DE,RU,IN,AR,FA
+title_geopolitics,GEOPOLITYCZNA MAPA RELACJI,GEOPOLITICAL RELATIONSHIP MAP,CARTE DES RELATIONS GÉOPOLITIQUES,GEOPOLITISCHE BEZIEHUNGSKARTE,ГЕОПОЛИТИЧЕСКАЯ КАРТА ОТНОШЕНИЙ,भू-राजनीतिक संबंध मानचित्र,خريطة العلاقات الجيوسياسية,نقشه روابط ژئوپلیتیک
+title_market,WPŁYW KONFLIKTU NA CENY SUROWCÓW,MARKET IMPACT ON COMMODITY PRICES,IMPACT DU CONFLIT SUR LES PRIX DES MATIÈRES PREMIÈRES,MARKTAUSWIRKUNGEN DES KONFLIKTS AUF ROHSTOFFPREISE,ВЛИЯНИЕ КОНФЛИКТА НА ЦЕНЫ НА СЫРЬЕ,वस्तु कीमतों पर संघर्ष का प्रभाव,تأثير الصراع على أسعار السلع الأساسية,تأثیر درگیری بر قیمت کالاها
+title_funding,POZIOM FINANSOWANIA UZBROJENIA,ARMAMENT FUNDING LEVEL,NIVEAU DE FINANCEMENT DE L'ARMEMENT,RÜSTUNGSFINANZIERUNGSNIVEAU,УРОВЕНЬ ФИНАНСИРОВАНИЯ ВООРУЖЕНИЙ,हथियार वित्तपोषण स्तर,مستوى تمويل التسليح,سطح تامین مالی تسلیحات
+label_oil,Ropa Brent ($),Brent Oil ($),Pétrole Brent ($),Brent Öl ($),Нефть Брент ($),ब्रेंट ऑयल ($),نفط برنت ($),نفت برنت ($)
+label_gas,Gaz Świat ($),World Gas ($),Gaz Mondial ($),Weltgas ($),Мировой газ ($),विश्व गैस ($),الغاز العالمي ($),گاز جهانی ($)
+label_usd,Kurs USD/PLN,USD/PLN Rate,Taux USD/PLN,USD/PLN Kurs,Курс USD/PLN,USD/PLN दर,سعر USD/PLN,نرخ USD/PLN
+label_diesel,Diesel PL (zł),Diesel PL (PLN),Diesel PL (PLN),Diesel PL (PLN),Дизель PL (PLN),डीजल PL (PLN),ديزل PL (PLN),دیزل PL (PLN)
+label_lng,LNG PL (zł),LNG PL (PLN),GNL PL (PLN),LNG PL (PLN),СПГ PL (PLN),एलएनजी PL (PLN),الغاز الطبيعي المسال PL (PLN),ال‌ان‌جی PL (PLN)
+axis_usd,USD ($) - Ropa i Gaz Świat,USD ($) - World Oil & Gas,USD ($) - Pétrole & Gaz Mondial,USD ($) - Welt Öl & Gas,USD ($) - Нефть и газ мир,USD ($) - विश्व तेल और गैस,USD ($) - النفط والغاز العالمي,USD ($) - نفت و گاز جهانی
+axis_fx,Kurs Waluty USD/PLN,USD/PLN Exchange Rate,Taux de change USD/PLN,Wechselkurs USD/PLN,Обменный курс USD/PLN,USD/PLN विनिमय दर,سعر صرف USD/PLN,نرخ ارز USD/PLN
+axis_pln,Cena PLN (zł) - Paliwa PL,PLN Price - PL Fuels,Prix PLN - Carburants PL,PLN Preis - PL Kraftstoffe,Цена PLN - Топливо PL,PLN कीमत - PL ईंधन,سعر PLN - الوقود في بولندا,قیمت PLN - سوخت‌های لهستان
+legend_mod,Umiarkowani,Moderates,Modérés,Moderaten,Умеренные,मध्यमवादी,المعتدلون,میانه روها
+legend_rad,Radykalni,Radicals,Radicaux,Radikalen,Радикалы,कट्टरपंथी,الراديكاليون,تندروها
+rel_full,Sojusz pełny (Biznes i Wojsko),Full Alliance (Business & Military),Alliance Totale (Affaires & Militaire),Vollallianz (Wirtschaft & Militär),Полный альянс (Бизнес и армия),पूर्ण गठबंधन (व्यवसाय और सैन्य),تحالف كامل (تجاري وعسكري),اتحاد کامل (تجاری و نظامی)
+rel_part,Sojusz częściowy (Wspólny Wróg),Partial Alliance (Common Enemy),Alliance Partielle (Ennemi Commun),Teilallianz (Gemeinsamer Feind),Частичный альянс (Общий враг),आंशिक गठबंधन (सामान्य शत्रु),تحالف جزئي (عدو مشترك),اتحاد جزئی (دشمن مشترک)
+rel_hostile,Wrogość (Ostrzał Zmasowany),Hostility (Massive Shelling),Hostilité (Bombardement Massif),Feindseligkeit (Massiver Beschuss),Враждебность (Массированный обстрел),शत्रुता (भारी गोलाबारी),عداء (قصف مكثف),خصومت (گلوله باران گسترده)
+rel_tension,Napięcie (Ostrzał Punktowy),Tension (Point Shelling),Tension (Bombardement Ciblée),Spannung (Punktbeschuss),Напряженность (Точечный обстрел),तनाव (बिंदु गोलाबारी),توتر (قصف نقطي),تنش (گلوله باران نقطه ای)
+rel_shia,Korelacja Szyici/Alawici,Shia/Alawite Correlation,Corrélation Chiite/Alaouite,Schia/Alawitische Korrelation,Шиитская/Алавитская корреляция,शिया/अलावी सहसंबंध,ارتباط الشيعة/العلويين,همبستگی شیعه/علوی
+rel_sunni,Korelacja Sunnici,Sunni Correlation,Corrélation Sunnite,Sunnitische Korrelation,Суннитская корреляция,सुन्नी सहसंबंध,ارتباط السنة,همبستگی سنی
+fund_usa,Finansowanie USA (%),USA Funding (%),Financement USA (%),USA Finanzierung (%),Финансирование США (%),यूएसए फंडिंग (%),تمويل الولايات المتحدة (%),بودجه ایالات متحده (%)
+fund_iran,Finansowanie Iran (%),Iran Funding (%),Financement Iran (%),Iran Finanzierung (%),Финансирование Ирана (%),ईران फंडिंग (%),تمويل إيران (%),بودجه ایران (%)

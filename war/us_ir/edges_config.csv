@@ -1,0 +1,31 @@
+source,target,color,style
+Iran,Liban: Hezbollah,green,-
+Iran,Jemen: Huti,green,-
+Iran,Syria,green,-
+Iran,Palestyna: Hamas,green,-
+USA,Izrael,green,-
+USA,Egipt,green,-
+USA,Katar,green,-
+USA,ZEA,green,-
+S. Arabia,USA,green,-
+Rosja,Syria,green,-
+Rosja,Iran,green,-
+Rosja,Chiny,green,-
+Chiny,Iran,green,-
+Chiny,Syria,green,--
+Turcja,USA,green,-
+Izrael,S. Arabia,green,--
+Turcja,Turcja: Kurdystan,red,--
+Iran,Izrael,red,-
+Iran,USA,red,-
+Liban: Hezbollah,Izrael,red,-
+Iran,S. Arabia,red,--
+Iran,ZEA,red,--
+Iran,Pakistan,red,--
+Indie,Rosja,green,-
+Indie,USA,green,--
+Indie,Pakistan,red,--
+Indie,Chiny,red,--
+Afganistan,Iran,red,--
+Afganistan,Pakistan,red,--
+Afganistan,Rosja,green,--

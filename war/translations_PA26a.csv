@@ -1,0 +1,22 @@
+key,PL
+title_geopolitics,GEOPOLITYCZNA MAPA RELACJI
+title_market,WPŁYW KONFLIKTU NA CENY SUROWCÓW
+title_funding,POZIOM FINANSOWANIA UZBROJENIA
+label_oil,Ropa Brent ($)
+label_gas,Gaz Świat ($)
+label_usd,Kurs USD/PLN
+label_diesel,Diesel PL (zł)
+label_lng,LNG PL (zł)
+axis_usd,USD ($) - Ropa i Gaz Świat
+axis_fx,Kurs Waluty USD/PLN
+axis_pln,Cena PLN (zł) - Paliwa PL
+legend_mod,Umiarkowani
+legend_rad,Radykalni
+rel_full,Sojusz pełny (Biznes i Wojsko)
+rel_part,Sojusz częściowy (Wspólny Wróg)
+rel_hostile,Wrogość (Ostrzał Zmasowany)
+rel_tension,Napięcie (Ostrzał Punktowy)
+rel_shia,Korelacja Szyici/Alawici
+rel_sunni,Korelacja Sunnici
+fund_usa,Finansowanie USA (%)
+fund_iran,Finansowanie Iran (%)
