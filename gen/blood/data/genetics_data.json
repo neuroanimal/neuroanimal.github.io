@@ -1,0 +1,182 @@
+[
+    {
+        "name": "Ashkenazi_Austria",
+        "is_isolate": true,
+        "p_A": 0.35,
+        "q_B": 0.22,
+        "Rh_neg": 0.14,
+        "D_stat": 0.095611,
+        "f3_admix": 0.137096
+    },
+    {
+        "name": "Ashkenazi_Belarussia",
+        "is_isolate": true,
+        "p_A": 0.35,
+        "q_B": 0.22,
+        "Rh_neg": 0.14,
+        "D_stat": 0.101915,
+        "f3_admix": 0.133972
+    },
+    {
+        "name": "Ashkenazi_France",
+        "is_isolate": true,
+        "p_A": 0.35,
+        "q_B": 0.22,
+        "Rh_neg": 0.14,
+        "D_stat": 0.095611,
+        "f3_admix": 0.143697
+    },
+    {
+        "name": "Ashkenazi_Germany",
+        "is_isolate": true,
+        "p_A": 0.35,
+        "q_B": 0.22,
+        "Rh_neg": 0.14,
+        "D_stat": 0.097319,
+        "f3_admix": 0.142377
+    },
+    {
+        "name": "Ashkenazi_Latvia",
+        "is_isolate": true,
+        "p_A": 0.35,
+        "q_B": 0.22,
+        "Rh_neg": 0.14,
+        "D_stat": 0.097319,
+        "f3_admix": 0.135065
+    },
+    {
+        "name": "Ashkenazi_Lithuania",
+        "is_isolate": true,
+        "p_A": 0.35,
+        "q_B": 0.22,
+        "Rh_neg": 0.14,
+        "D_stat": 0.099854,
+        "f3_admix": 0.132757
+    },
+    {
+        "name": "Ashkenazi_Poland",
+        "is_isolate": true,
+        "p_A": 0.35,
+        "q_B": 0.22,
+        "Rh_neg": 0.14,
+        "D_stat": 0.100117,
+        "f3_admix": 0.136843
+    },
+    {
+        "name": "Ashkenazi_Romania",
+        "is_isolate": true,
+        "p_A": 0.35,
+        "q_B": 0.22,
+        "Rh_neg": 0.14,
+        "D_stat": 0.102441,
+        "f3_admix": 0.137096
+    },
+    {
+        "name": "Ashkenazi_Russia",
+        "is_isolate": true,
+        "p_A": 0.35,
+        "q_B": 0.22,
+        "Rh_neg": 0.14,
+        "D_stat": 0.101189,
+        "f3_admix": 0.131511
+    },
+    {
+        "name": "Ashkenazi_Ukraine",
+        "is_isolate": true,
+        "p_A": 0.35,
+        "q_B": 0.22,
+        "Rh_neg": 0.14,
+        "D_stat": 0.099424,
+        "f3_admix": 0.135116
+    },
+    {
+        "name": "Belarus",
+        "is_isolate": false,
+        "p_A": 0.35,
+        "q_B": 0.18,
+        "Rh_neg": 0.14,
+        "D_stat": 0.132262,
+        "f3_admix": 0.123623
+    },
+    {
+        "name": "Czechia",
+        "is_isolate": false,
+        "p_A": 0.35,
+        "q_B": 0.18,
+        "Rh_neg": 0.14,
+        "D_stat": 0.13116,
+        "f3_admix": 0.131862
+    },
+    {
+        "name": "Estonia",
+        "is_isolate": false,
+        "p_A": 0.35,
+        "q_B": 0.14,
+        "Rh_neg": 0.14,
+        "D_stat": 0.132945,
+        "f3_admix": 0.114146
+    },
+    {
+        "name": "Germany",
+        "is_isolate": false,
+        "p_A": 0.35,
+        "q_B": 0.18,
+        "Rh_neg": 0.14,
+        "D_stat": 0.130299,
+        "f3_admix": 0.137378
+    },
+    {
+        "name": "Hungary",
+        "is_isolate": false,
+        "p_A": 0.35,
+        "q_B": 0.18,
+        "Rh_neg": 0.14,
+        "D_stat": 0.127076,
+        "f3_admix": 0.129625
+    },
+    {
+        "name": "Latvia",
+        "is_isolate": false,
+        "p_A": 0.35,
+        "q_B": 0.18,
+        "Rh_neg": 0.14,
+        "D_stat": 0.135449,
+        "f3_admix": 0.122473
+    },
+    {
+        "name": "Lebanon",
+        "is_isolate": false,
+        "p_A": 0.35,
+        "q_B": 0.18,
+        "Rh_neg": 0.14,
+        "D_stat": 0.088149,
+        "f3_admix": 0.145785
+    },
+    {
+        "name": "Palestine",
+        "is_isolate": false,
+        "p_A": 0.35,
+        "q_B": 0.18,
+        "Rh_neg": 0.14,
+        "D_stat": 0.045529,
+        "f3_admix": 0.134253
+    },
+    {
+        "name": "Poland",
+        "is_isolate": false,
+        "p_A": 0.35,
+        "q_B": 0.18,
+        "Rh_neg": 0.14,
+        "D_stat": 0.13184,
+        "f3_admix": 0.12927
+    },
+    {
+        "name": "Russia",
+        "is_isolate": false,
+        "p_A": 0.35,
+        "q_B": 0.18,
+        "Rh_neg": 0.14,
+        "D_stat": 0.130586,
+        "f3_admix": 0.116786
+    }
+]

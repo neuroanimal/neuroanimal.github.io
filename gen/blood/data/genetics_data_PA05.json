@@ -1,0 +1,14 @@
+[
+    {"name": "Lithuania", "p_A": 0.39, "q_B": 0.16, "Rh_neg": 0.15, "f3_admix": -0.012, "D_stat": -0.45},
+    {"name": "Poland", "p_A": 0.38, "q_B": 0.19, "Rh_neg": 0.15, "f3_admix": -0.020, "D_stat": -0.30},
+    {"name": "Slovakia", "p_A": 0.36, "q_B": 0.19, "Rh_neg": 0.14, "f3_admix": -0.025, "D_stat": -0.20},
+    {"name": "Czechia", "p_A": 0.37, "q_B": 0.18, "Rh_neg": 0.15, "f3_admix": -0.022, "D_stat": -0.25},
+    {"name": "Ukraine", "p_A": 0.35, "q_B": 0.23, "Rh_neg": 0.09, "f3_admix": -0.040, "D_stat": -0.05},
+    {"name": "Germany", "p_A": 0.42, "q_B": 0.10, "Rh_neg": 0.16, "f3_admix": -0.015, "D_stat": -0.40},
+    {"name": "Spain", "p_A": 0.39, "q_B": 0.08, "Rh_neg": 0.18, "f3_admix": -0.018, "D_stat": -0.50},
+    {"name": "Italy", "p_A": 0.31, "q_B": 0.11, "Rh_neg": 0.16, "f3_admix": -0.045, "D_stat": 0.10},
+    {"name": "Greece", "p_A": 0.33, "q_B": 0.14, "Rh_neg": 0.14, "f3_admix": -0.055, "D_stat": 0.20},
+    {"name": "Israel", "p_A": 0.34, "q_B": 0.22, "Rh_neg": 0.12, "f3_admix": -0.075, "D_stat": 0.45},
+    {"name": "Lebanon", "p_A": 0.30, "q_B": 0.18, "Rh_neg": 0.11, "f3_admix": -0.080, "D_stat": 0.50},
+    {"name": "Japan", "p_A": 0.28, "q_B": 0.17, "Rh_neg": 0.005, "f3_admix": 0.005, "D_stat": 0.90}
+]
