@@ -15,160 +15,229 @@
       --word: #00d5f5;
       --symbol: #ff4f9a;
       --good: #00c781;
+      --border: rgba(127,127,127,.36);
+      --surface: Canvas;
+      --ink: CanvasText;
     }
     * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      max-width: 920px;
       margin: 0 auto;
-      padding: 14px;
-      line-height: 1.45;
+      padding: 8px;
+      max-width: 1500px;
+      color: var(--ink);
+      line-height: 1.35;
     }
-    h1 { font-size: clamp(1.45rem, 5vw, 2rem); margin: 8px 0; }
-    h2 { font-size: 1.15rem; margin: 22px 0 8px; }
-    .intro, .hint { color: var(--muted); font-size: .92rem; }
+    button, input, select { font: inherit; }
+    button { color: inherit; cursor: pointer; }
+    button:disabled { opacity: .42; cursor: not-allowed; }
+    .appbar {
+      display: flex; align-items: center; gap: 8px; min-height: 42px;
+      position: sticky; top: 0; z-index: 30; padding: 4px 0 8px;
+      background: Canvas; border-bottom: 1px solid var(--border);
+    }
+    .brand {
+      flex: 0 0 auto; font-size: .85rem; font-weight: 800; letter-spacing: .08em;
+      padding: 0 5px 0 2px; opacity: .85;
+    }
+    .toolbar { display: flex; align-items: center; gap: 4px; min-width: 0; flex-wrap: wrap; }
+    .icon-btn {
+      width: 36px; height: 36px; padding: 0; display: inline-grid; place-items: center;
+      border: 1px solid var(--border); border-radius: 10px; background: var(--panel);
+      font-size: 1.15rem; line-height: 1; position: relative; flex: 0 0 auto;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .icon-btn[aria-pressed="true"], .icon-btn.active { border-color: var(--good); box-shadow: inset 0 0 0 1px var(--good); }
+    .icon-btn:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid #3182ce; outline-offset: 2px; }
+    .icon-btn .tiny-dot { position: absolute; width: 7px; height: 7px; border-radius: 99px; background: var(--good); right: 4px; top: 4px; }
+    .toolbar-spacer { flex: 1 1 auto; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-items: start; padding-top: 8px; }
+    body[data-ui-layout="vertical"] .workspace { grid-template-columns: minmax(0,1fr); }
+    body[data-ui-layout="horizontal"] .workspace { grid-template-columns: minmax(0, 1.25fr) minmax(290px, .85fr); }
+    .camera-column, .data-column { min-width: 0; }
     .camera-stage {
-      position: relative;
-      width: 100%;
-      overflow: hidden;
-      border-radius: 12px;
-      background: #111;
-      box-shadow: 0 1px 8px rgba(0,0,0,.12);
+      position: relative; width: 100%; overflow: hidden; border-radius: 12px;
+      background: #111; box-shadow: 0 1px 8px rgba(0,0,0,.12);
+      isolation: isolate;
     }
     #camera {
-      display: block;
-      width: 100%;
-      max-height: 60vh;
-      aspect-ratio: 4 / 3;
-      object-fit: contain;
-      background: #111;
+      display: block; width: 100%; height: min(63svh, 700px); min-height: 210px;
+      object-fit: contain; background: #111;
     }
-    #overlay {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
+    #overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    #documentGuide {
+      display: none; position: absolute; z-index: 2; left: 50%; top: 48%; transform: translate(-50%,-50%);
+      width: 66%; height: 78%; border: 1.5px dashed rgba(255,255,255,.72); border-radius: 8px;
+      pointer-events: none; box-shadow: 0 0 0 999px rgba(0,0,0,.04);
+    }
+    .camera-stage[data-guide="true"] #documentGuide { display: block; }
+    .camera-stage[data-document-orientation="portrait"] #documentGuide { width: 48%; height: 82%; }
+    .camera-stage[data-document-orientation="landscape"] #documentGuide { width: 84%; height: 54%; }
+    .camera-stage[data-document-orientation="auto"] #documentGuide { width: 66%; height: 76%; }
+    .status-panel {
+      position: absolute; z-index: 4; left: 8px; right: 8px; bottom: 8px;
+      min-height: 43px; max-height: 48px; padding: 5px 9px 6px;
+      display: grid; grid-template-columns: minmax(0,1fr) auto; grid-template-rows: 1fr 3px;
+      column-gap: 8px; row-gap: 4px; overflow: hidden; border-radius: 9px;
+      background: rgba(10,10,12,.76); color: #fff; backdrop-filter: blur(8px);
       pointer-events: none;
     }
-    .controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
-    button {
-      border: 1px solid rgba(127,127,127,.45);
-      border-radius: 9px;
-      padding: 10px 13px;
-      font: inherit;
-      cursor: pointer;
+    #status { grid-column: 1; grid-row: 1; align-self: center; margin: 0; min-width: 0; font-size: .78rem; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .meter-row { grid-column: 2; grid-row: 1; display: flex; align-items: center; gap: 7px; max-width: 42vw; color: rgba(255,255,255,.8); font-size: .65rem; white-space: nowrap; }
+    .meter-row span { max-width: 95px; overflow: hidden; text-overflow: ellipsis; }
+    progress { grid-column: 1 / -1; grid-row: 2; width: 100%; height: 3px; appearance: none; border: 0; border-radius: 99px; overflow: hidden; }
+    progress::-webkit-progress-bar { background: rgba(255,255,255,.18); }
+    progress::-webkit-progress-value { background: var(--good); }
+    progress::-moz-progress-bar { background: var(--good); }
+    #phaseLabel, #readingInfo { display: none; }
+    .settings-panel { display: none; }
+    .data-column { display: grid; gap: 8px; }
+    .panel {
+      border: 1px solid var(--border); border-radius: 12px; overflow: hidden; min-width: 0;
       background: var(--panel);
-      color: inherit;
     }
-    button:disabled { opacity: .45; cursor: not-allowed; }
-    button.primary { font-weight: 650; border-color: rgba(0,199,129,.7); }
-    button.danger { border-color: rgba(255,80,80,.55); }
-    .status-panel, .reading-panel, .saved-panel, .settings-panel {
-      border: 1px solid rgba(127,127,127,.3);
-      border-radius: 12px;
-      padding: 12px;
-      margin: 12px 0;
+    .panel-head { display: flex; align-items: center; gap: 6px; min-height: 38px; padding: 5px 7px; border-bottom: 1px solid var(--border); }
+    .panel-symbol { width: 25px; text-align: center; font-size: 1.05rem; opacity: .78; flex: 0 0 auto; }
+    .panel-meta { color: var(--muted); font-size: .72rem; flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .small-icon-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border); background: transparent; display: inline-grid; place-items: center; font-size: 1rem; padding: 0; }
+    .ocr-lines { display: grid; gap: 3px; max-height: 34svh; overflow: auto; padding: 6px; }
+    .ocr-line { padding: 5px 7px; border-radius: 6px; background: var(--panel); overflow-wrap: anywhere; font-size: .9rem; }
+    .ocr-line.low { border-left: 3px solid #e5a000; }
+    .ocr-line .confidence { color: var(--muted); font-size: .67rem; margin-top: 2px; }
+    .empty { color: var(--muted); margin: 6px; font-size: .8rem; }
+    .saved-content { max-height: 35svh; overflow: auto; padding: 0 8px 8px; }
+    .saved-item { border-top: 1px solid var(--border); padding: 8px 0; }
+    .saved-item:first-child { border-top: 0; }
+    .saved-head { display: flex; align-items: center; justify-content: space-between; gap: 5px; }
+    .saved-title { font-size: .76rem; font-weight: 650; }
+    .saved-note { color: #bd8300; font-size: .72rem; margin: 4px 0; }
+    .saved-item pre { white-space: pre-wrap; overflow-wrap: anywhere; margin: 6px 0 0; font: inherit; font-size: .8rem; background: var(--panel); border-radius: 6px; padding: 7px; }
+    .saved-item summary { cursor: pointer; color: var(--muted); font-size: .74rem; }
+    .popover-backdrop { position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.16); }
+    .popover {
+      position: fixed; z-index: 51; top: 54px; left: 8px; right: 8px; margin: 0 auto; width: min(440px, calc(100vw - 16px));
+      max-height: min(72svh, 650px); overflow: auto; background: Canvas; color: CanvasText;
+      border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,.28); padding: 12px;
     }
-    #status { min-height: 1.4em; margin: 0 0 7px; font-weight: 600; }
-    .meter-row { display: flex; justify-content: space-between; gap: 12px; font-size: .85rem; color: var(--muted); }
-    progress { width: 100%; height: 10px; accent-color: var(--good); }
-    .legend, .toggles { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 8px 0; }
-    .legend span, .toggles label { display: inline-flex; align-items: center; gap: 7px; font-size: .9rem; }
-    .swatch { display: inline-block; width: 19px; border-top: 3px solid; }
+    .popover[hidden], .popover-backdrop[hidden] { display: none !important; }
+    .popover-head { display: flex; align-items: flex-start; gap: 8px; }
+    .popover-title { font-size: .95rem; font-weight: 750; margin: 0; flex: 1; }
+    .popover-description { font-size: .8rem; line-height: 1.35; color: var(--muted); margin: 6px 0 10px; }
+    .popover-body { display: grid; gap: 8px; }
+    .popover-footer { display: flex; justify-content: flex-end; gap: 7px; padding-top: 10px; margin-top: 10px; border-top: 1px solid var(--border); }
+    .action-btn, .choice-btn, select, .text-input {
+      min-height: 36px; border: 1px solid var(--border); border-radius: 9px; padding: 7px 10px; background: var(--panel); color: inherit;
+    }
+    .action-btn.primary { border-color: var(--good); font-weight: 700; }
+    .action-btn.danger { border-color: rgba(255,80,80,.65); }
+    .choice-list { display: grid; gap: 5px; }
+    .choice { display: flex; gap: 9px; align-items: center; padding: 8px; border: 1px solid var(--border); border-radius: 9px; font-size: .82rem; }
+    .choice input { accent-color: var(--good); }
+    .popover-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; }
+    .popover-note { color: var(--muted); font-size: .73rem; margin: 0; }
+    .legend { display: grid; gap: 7px; }
+    .legend span { display: flex; align-items: center; gap: 8px; font-size: .8rem; }
+    .swatch { display: inline-block; width: 18px; border-top: 3px solid; }
     .swatch.region { border-color: var(--accent); border-top-style: dashed; }
     .swatch.line { border-color: var(--line); }
     .swatch.word { border-color: var(--word); }
     .swatch.symbol { border-color: var(--symbol); }
-    label.range-control { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: .9rem; }
-    input[type="range"] { width: 150px; }
-    .phase { font-size: .88rem; color: var(--muted); margin-top: 8px; }
-    .ocr-lines { display: grid; gap: 6px; }
-    .ocr-line { padding: 8px 10px; border-radius: 8px; background: var(--panel); overflow-wrap: anywhere; }
-    .ocr-line.low { border-left: 3px solid #e5a000; }
-    .ocr-line .confidence { color: var(--muted); font-size: .78rem; margin-top: 2px; }
-    .empty { color: var(--muted); margin: 4px 0; }
-    .saved-item { border-top: 1px solid rgba(127,127,127,.25); padding: 10px 0; }
-    .saved-item:first-child { border-top: 0; }
-    .saved-head { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
-    .saved-title { font-weight: 650; }
-    .saved-note { color: #bd8300; font-size: .84rem; margin: 4px 0; }
-    .saved-item pre { white-space: pre-wrap; overflow-wrap: anywhere; margin: 8px 0 0; font: inherit; background: var(--panel); border-radius: 8px; padding: 9px; }
-    details summary { cursor: pointer; font-size: .9rem; }
-    footer { color: var(--muted); font-size: .82rem; margin: 18px 0 8px; }
-    @media (prefers-color-scheme: light) {
-      body { color: #202124; }
+    .range-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 7px; font-size: .8rem; }
+    input[type="range"] { width: 100%; accent-color: var(--good); }
+    .visually-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .footer-note { color: var(--muted); font-size: .68rem; padding: 8px 2px; }
+    @media (min-width: 820px) {
+      body[data-ui-layout="auto"] .workspace { grid-template-columns: minmax(0, 1.25fr) minmax(300px, .85fr); }
+      .popover { left: 12px; right: auto; top: 56px; margin: 0; }
+    }
+    @media (max-width: 819px) {
+      body[data-ui-layout="horizontal"] .workspace { grid-template-columns: minmax(0,1fr); }
+    }
+    @media (max-width: 450px) {
+      body { padding: 5px; }
+      .appbar { gap: 4px; }
+      .brand { padding-right: 1px; font-size: .72rem; }
+      .toolbar { gap: 3px; }
+      .icon-btn { width: 30px; height: 30px; border-radius: 8px; font-size: 1.05rem; }
+      #camera { height: min(57svh, 520px); min-height: 190px; }
+      .meter-row { max-width: 36vw; }
+      .meter-row span { max-width: 62px; }
     }
   </style>
 </head>
-<body>
-  <h1>Skill Bill — sekwencyjny skaner OCR</h1>
-  <p class="intro">Skan uruchamia się automatycznie po wykryciu względnego bezruchu. Wynik na żywo zastępuje poprzedni, a trwałe fragmenty zapisujesz jawnie, przyciskiem.</p>
+<body data-ui-layout="auto" data-ui-language="en" data-document-orientation="auto">
+  <header class="appbar">
+    <div class="brand" aria-label="Skill Bill">SB</div>
+    <nav class="toolbar" aria-label="Tools">
+      <button class="icon-btn" id="cameraMenuBtn" data-menu="camera" aria-label="Camera" title="Camera">◉</button>
+      <button class="icon-btn" id="scanMenuBtn" data-menu="scan" aria-label="OCR scanning" title="OCR scanning">⦿</button>
+      <button class="icon-btn" id="documentMenuBtn" data-menu="document" aria-label="Document orientation" title="Document orientation">▭</button>
+      <button class="icon-btn" id="layoutMenuBtn" data-menu="layout" aria-label="Interface layout" title="Interface layout">↔</button>
+      <button class="icon-btn" id="uiLanguageBtn" data-menu="ui-language" aria-label="Interface language" title="Interface language">文</button>
+      <button class="icon-btn" id="ocrLanguageBtn" data-menu="ocr-language" aria-label="OCR language" title="OCR language">A文</button>
+      <button class="icon-btn" id="layersMenuBtn" data-menu="layers" aria-label="Overlay and motion settings" title="Overlay and motion settings">◫</button>
+      <button class="icon-btn" id="profileMenuBtn" data-menu="profile" aria-label="Document profile" title="Document profile">▤</button>
+      <button class="icon-btn" id="saveMenuBtn" data-menu="save" aria-label="Save OCR fragment" title="Save OCR fragment">＋</button>
+      <button class="icon-btn" id="savedMenuBtn" data-menu="saved" aria-label="Saved fragments and export" title="Saved fragments and export">⇩</button>
+    </nav>
+  </header>
 
-  <div class="camera-stage">
-    <video id="camera" autoplay playsinline muted></video>
-    <canvas id="overlay" aria-hidden="true"></canvas>
-  </div>
-
-  <div class="controls">
-    <button id="startCamera" class="primary">1. Włącz kamerę</button>
-    <button id="toggleScan" disabled>2. Uruchom skanowanie etapowe</button>
-    <button id="stopCamera" class="danger" disabled>Zatrzymaj kamerę</button>
-  </div>
-
-  <section class="status-panel" aria-live="polite">
-    <p id="status" role="status">Gotowe. Włącz kamerę, potem rozpocznij skanowanie etapowe.</p>
-    <div class="meter-row"><span id="stabilityLabel">Stabilność obrazu: —</span><span id="motionLabel">Ruch: —</span></div>
-    <progress id="stabilityMeter" value="0" max="100"></progress>
-    <div id="phaseLabel" class="phase">Kolejność: obszary → wiersze tekstu → wyrazy → znaki.</div>
+  <div class="popover-backdrop" id="popoverBackdrop" hidden></div>
+  <section class="popover" id="popover" role="dialog" aria-modal="true" aria-labelledby="popoverTitle" hidden>
+    <div class="popover-head">
+      <h2 class="popover-title" id="popoverTitle">Settings</h2>
+      <button class="small-icon-btn" id="closePopover" aria-label="Close">×</button>
+    </div>
+    <p class="popover-description" id="popoverDescription"></p>
+    <div class="popover-body" id="popoverBody"></div>
+    <div class="popover-footer" id="popoverFooter"></div>
   </section>
 
-  <section class="settings-panel">
-    <strong>Warstwy obrazu</strong>
-    <div class="legend">
-      <span><i class="swatch region"></i>Obszary tekstu</span>
-      <span><i class="swatch line"></i>Wiersze / potencjalne teksty</span>
-      <span><i class="swatch word"></i>Wyrazy</span>
-      <span><i class="swatch symbol"></i>Znaki</span>
-    </div>
-    <div class="toggles">
-      <label><input type="checkbox" id="showRegions" checked> Obszary</label>
-      <label><input type="checkbox" id="showLines" checked> Wiersze</label>
-      <label><input type="checkbox" id="showWords" checked> Wyrazy</label>
-      <label><input type="checkbox" id="showSymbols" checked> Znaki</label>
-    </div>
-    <label class="range-control" for="motionThreshold">
-      Próg ruchu <input type="range" id="motionThreshold" min="3" max="18" step="0.5" value="7.5">
-      <output id="thresholdValue">7,5</output>
-    </label>
-    <p class="hint">Wyższy próg ignoruje więcej drobnych zmian obrazu (np. szum matrycy), ale może przegapić niewielki ruch. Jeśli analiza nie startuje, spróbuj podnieść próg.</p>
-  </section>
-
-  <section class="reading-panel">
-    <div class="saved-head">
-      <h2 style="margin-top:0">Aktualny odczyt</h2>
-      <button id="saveReading" disabled>Zachowaj ten fragment</button>
-    </div>
-    <p id="readingInfo" class="hint">Tekst zostanie zaktualizowany dopiero po analizie stabilnej klatki — nie przy każdej klatce kamery.</p>
-    <div id="currentLines" class="ocr-lines"><p class="empty">Brak odczytu.</p></div>
-  </section>
-
-  <section class="saved-panel">
-    <div class="saved-head">
-      <div>
-        <h2 style="margin:0">Zachowane fragmenty</h2>
-        <p id="savedCount" class="hint">0 zapisanych fragmentów</p>
+  <main class="workspace">
+    <section class="camera-column" aria-label="Camera and OCR controls">
+      <div class="camera-stage" id="cameraStage" data-document-orientation="auto" data-guide="false">
+        <video id="camera" autoplay playsinline muted></video>
+        <canvas id="overlay" aria-hidden="true"></canvas>
+        <div id="documentGuide" aria-hidden="true"></div>
+        <section class="status-panel" aria-live="polite">
+          <p id="status" role="status">Ready. Open Camera to begin.</p>
+          <div class="meter-row"><span id="stabilityLabel">STB —</span><span id="motionLabel">MOV —</span></div>
+          <progress id="stabilityMeter" value="0" max="100"></progress>
+          <div id="phaseLabel" class="phase">Areas → lines → words → characters.</div>
+        </section>
       </div>
-      <div class="controls" style="margin:0">
-        <button id="exportSaved" disabled>Eksportuj TXT</button>
-        <button id="clearSaved" class="danger" disabled>Wyczyść</button>
-      </div>
-    </div>
-    <p class="hint">Powtórny identyczny fragment nie zostanie zapisany drugi raz. Fragmenty z częściowo powtarzającymi się wierszami są oznaczane, ale nie są automatycznie scalane — identyczne pozycje mogą rzeczywiście występować na paragonie więcej niż raz.</p>
-    <div id="savedList"><p class="empty">Nie zapisano jeszcze żadnych fragmentów.</p></div>
-  </section>
+      <section class="settings-panel">
+        <label for="motionThreshold">Motion threshold</label>
+        <input type="range" id="motionThreshold" min="3" max="18" step="0.5" value="7.5">
+        <output id="thresholdValue">7.5</output>
+      </section>
+      <p class="footer-note" id="privacyNote">Camera access requires permission. OCR runs in the browser after its library and language data are downloaded.</p>
+    </section>
 
-  <footer>Prototyp działa lokalnie w przeglądarce poza pobraniem biblioteki OCR i modelu językowego z CDN. Rozpoznanie może zawierać błędy; przed użyciem danych finansowych sprawdź wynik. Dostęp do kamery wymaga zgody i bezpiecznego kontekstu HTTPS.</footer>
+    <section class="data-column" aria-label="OCR results">
+      <section class="panel reading-panel">
+        <div class="panel-head">
+          <span class="panel-symbol" aria-hidden="true">≋</span>
+          <span class="panel-meta" id="readingMeta">Live OCR result</span>
+          <button class="small-icon-btn" id="copyReading" aria-label="Copy current OCR text" title="Copy current OCR text">⧉</button>
+          <button class="small-icon-btn" id="saveReading" disabled aria-label="Save current OCR fragment" title="Save current OCR fragment">＋</button>
+        </div>
+        <p id="readingInfo" class="hint">Only the current stable frame is shown here.</p>
+        <div id="currentLines" class="ocr-lines"><p class="empty">No text yet.</p></div>
+      </section>
 
+      <section class="panel saved-panel">
+        <div class="panel-head">
+          <span class="panel-symbol" aria-hidden="true">▣</span>
+          <span class="panel-meta" id="savedCount">0 saved fragments</span>
+          <button class="small-icon-btn" id="exportSaved" disabled aria-label="Export saved OCR text" title="Export saved OCR text">⇩</button>
+          <button class="small-icon-btn danger" id="clearSaved" disabled aria-label="Clear saved fragments" title="Clear saved fragments">⌫</button>
+        </div>
+        <div class="saved-content" id="savedList"><p class="empty">No saved fragments.</p></div>
+      </section>
+    </section>
+  </main>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script>
     (() => {
@@ -182,9 +251,11 @@
       const motionLabel = document.getElementById("motionLabel");
       const stabilityMeter = document.getElementById("stabilityMeter");
       const phaseLabel = document.getElementById("phaseLabel");
-      const startCameraButton = document.getElementById("startCamera");
-      const toggleScanButton = document.getElementById("toggleScan");
-      const stopCameraButton = document.getElementById("stopCamera");
+      // Hidden compatibility buttons keep the original scanner state machine independent of the compact UI.
+      const startCameraButton = document.createElement("button");
+      const toggleScanButton = document.createElement("button");
+      const stopCameraButton = document.createElement("button");
+      startCameraButton.hidden = toggleScanButton.hidden = stopCameraButton.hidden = true;
       const saveReadingButton = document.getElementById("saveReading");
       const exportSavedButton = document.getElementById("exportSaved");
       const clearSavedButton = document.getElementById("clearSaved");
@@ -192,12 +263,24 @@
       const readingInfoEl = document.getElementById("readingInfo");
       const savedCountEl = document.getElementById("savedCount");
       const savedListEl = document.getElementById("savedList");
-      const showRegions = document.getElementById("showRegions");
-      const showLines = document.getElementById("showLines");
-      const showWords = document.getElementById("showWords");
-      const showSymbols = document.getElementById("showSymbols");
-      const motionThresholdInput = document.getElementById("motionThreshold");
-      const thresholdValue = document.getElementById("thresholdValue");
+      function ensureHiddenControl(id, tag = "input", type = "checkbox") {
+        let element = document.getElementById(id);
+        if (!element) {
+          element = document.createElement(tag); element.id = id; element.hidden = true;
+          if (tag === "input") element.type = type;
+          if (["showRegions", "showLines", "showWords", "showSymbols"].includes(id)) element.checked = true;
+          if (id === "motionThreshold") { element.min = "3"; element.max = "18"; element.step = "0.5"; element.value = "7.5"; }
+          document.body.appendChild(element);
+        }
+        return element;
+      }
+      const showRegions = ensureHiddenControl("showRegions");
+      const showLines = ensureHiddenControl("showLines");
+      const showWords = ensureHiddenControl("showWords");
+      const showSymbols = ensureHiddenControl("showSymbols");
+      const motionThresholdInput = ensureHiddenControl("motionThreshold", "input", "range");
+      const thresholdValue = ensureHiddenControl("thresholdValue", "output", "");
+      document.body.append(startCameraButton, toggleScanButton, stopCameraButton);
 
       // OCR runs on one frozen canvas snapshot after the image has settled.
       const frameCanvas = document.createElement("canvas");
@@ -211,11 +294,20 @@
       const MOTION_POLL_MS = 180;
       const STAGE_HOLD_MS = 850;
       const STORAGE_KEY = "skill-bill-staged-ocr-observations-v1";
+      const SETTINGS_KEY = "skill-bill-ui-settings-v1";
+      let uiLanguage = "en";
+      let documentOrientation = "auto";
+      let uiLayout = "auto";
+      let selectedOcrLanguages = ["pol"];
+      let workerLanguageKey = null;
+      let documentProfile = "receipt";
+      let activePopover = null;
+      let draftPopoverState = null;
       const STAGES = [
-        { key: "regions", label: "Etap 1/4 — obszary tekstu", phase: "Wstępne obszary tekstu (żółte, przerywane ramki)." },
-        { key: "lines", label: "Etap 2/4 — potencjalne teksty", phase: "Wiersze rozpoznanego tekstu. Trzymam położenie i sprawdzam stabilność obrazu." },
-        { key: "words", label: "Etap 3/4 — wyrazy", phase: "Podział wierszy na wyrazy." },
-        { key: "symbols", label: "Etap 4/4 — znaki", phase: "Szczegółowy podział wyrazów na znaki." }
+        { key: "regions", label: "Stage 1/4 — text regions", phase: "Text regions (yellow dashed boxes)." },
+        { key: "lines", label: "Stage 2/4 — text lines", phase: "Recognized text lines." },
+        { key: "words", label: "Stage 3/4 — words", phase: "Word boundaries." },
+        { key: "symbols", label: "Stage 4/4 — characters", phase: "Character boundaries." }
       ];
 
       let stream = null;
@@ -234,12 +326,20 @@
       let currentReading = null;
       let savedObservations = loadSavedObservations();
 
-      startCameraButton.addEventListener("click", startCamera);
-      toggleScanButton.addEventListener("click", toggleScanning);
-      stopCameraButton.addEventListener("click", stopCamera);
-      saveReadingButton.addEventListener("click", saveCurrentReading);
-      exportSavedButton.addEventListener("click", exportSavedReadings);
-      clearSavedButton.addEventListener("click", clearSavedReadings);
+      // All settings/actions are opened from compact icon buttons and confirmed in a popover.
+      document.querySelectorAll("[data-menu]").forEach(button => {
+        button.addEventListener("click", () => openPopover(button.dataset.menu));
+      });
+      document.getElementById("closePopover").addEventListener("click", closePopover);
+      document.getElementById("popoverBackdrop").addEventListener("click", closePopover);
+      document.addEventListener("keydown", event => { if (event.key === "Escape" && activePopover) closePopover(); });
+      document.getElementById("popoverFooter").addEventListener("click", handlePopoverAction);
+      document.getElementById("popoverBody").addEventListener("click", handlePopoverAction);
+      document.getElementById("popoverBody").addEventListener("change", updatePopoverDraft);
+      document.getElementById("copyReading").addEventListener("click", () => openPopover("copy"));
+      saveReadingButton.addEventListener("click", () => openPopover("save"));
+      exportSavedButton.addEventListener("click", () => openPopover("saved"));
+      clearSavedButton.addEventListener("click", () => openPopover("saved"));
       [showRegions, showLines, showWords, showSymbols].forEach(el => {
         el.addEventListener("change", () => drawOverlay(currentData));
       });
@@ -249,18 +349,380 @@
       window.addEventListener("resize", () => drawOverlay(currentData));
       document.addEventListener("visibilitychange", () => {
         if (document.hidden && scanning) {
-          statusEl.textContent = "Strona jest w tle. Wróć do niej, aby kontynuować wykrywanie stabilności.";
+          setStatus("Strona jest w tle. Wróć do niej, aby kontynuować wykrywanie stabilności.");
         }
       });
 
-      renderSavedObservations();
+      const I18N = {
+        en: {
+          ready: "Ready. Open Camera to begin.", camera: "Camera", scan: "OCR scanning", document: "Document orientation",
+          layout: "Interface layout", uiLanguage: "Interface language", ocrLanguage: "OCR language", layers: "Overlay and motion settings",
+          profile: "Document profile", save: "Save OCR fragment", saved: "Saved fragments and export", copy: "Copy OCR text", close: "Close", apply: "Apply selection", cancel: "Cancel",
+          startCamera: "Start camera", stopCamera: "Stop camera", startScan: "Start staged scan", stopScan: "Stop scanning", noCamera: "Camera is not running.",
+          cameraDesc: "Start or stop the camera. The camera permission prompt is managed by your browser.",
+          scanDesc: "The scanner waits for relative stillness, OCRs one frame, then reveals text regions, lines, words and characters in sequence.",
+          documentDesc: "Choose an expected document orientation. This changes the guide overlay, not the physical rotation of the phone.",
+          layoutDesc: "Choose how the camera and OCR results are arranged. Auto uses a vertical stack on narrow screens and side-by-side panels on wide screens.",
+          uiLanguageDesc: "Change the interface language. OCR language selection is separate.",
+          ocrLanguageDesc: "Choose one or more recognition languages. Loading additional language data can take time and memory.",
+          layersDesc: "Choose which recognition boxes are visible and tune the motion threshold.",
+          profileDesc: "Choose the kind of object being scanned. In this prototype the profile is a saved setting; specialized parsing rules will be added next.",
+          saveDesc: "Save the current stable OCR reading as a separate observation. Possible overlapping lines are flagged rather than silently removed.",
+          savedDesc: "Export saved observations or clear the local saved list.", copyDesc: "Copy the current recognized text to the clipboard. The text stays on this device unless you choose to share it.",
+          auto: "Auto", portrait: "Portrait", landscape: "Landscape", vertical: "Vertical", horizontal: "Horizontal",
+          english: "English", polish: "Polski", receipt: "Receipt", flyer: "Flyer", bookCover: "Book cover", bookText: "Book text", packaging: "Packaging", manual: "Instruction manual", bottle: "Bottle label",
+          regions: "Text regions", lines: "Text lines", words: "Words", symbols: "Characters", motion: "Motion threshold", guide: "Show document guide",
+          confirmStartCamera: "Open the camera? Your browser will ask for permission if needed.", confirmStopCamera: "Stop the camera stream on this device?",
+          savedEmpty: "No saved fragments.", noReading: "No text yet.", currentReading: "Live OCR result", privacy: "Camera access requires permission. OCR runs in the browser after its library and language data are downloaded."
+        },
+        pl: {
+          ready: "Gotowe. Otwórz aparat, aby rozpocząć.", camera: "Aparat", scan: "Skanowanie OCR", document: "Orientacja dokumentu",
+          layout: "Układ interfejsu", uiLanguage: "Język interfejsu", ocrLanguage: "Język OCR", layers: "Ramki i ustawienia ruchu",
+          profile: "Profil dokumentu", save: "Zapisz fragment OCR", saved: "Zapisane fragmenty i eksport", copy: "Kopiuj tekst OCR", close: "Zamknij", apply: "Zatwierdź wybór", cancel: "Anuluj",
+          startCamera: "Włącz aparat", stopCamera: "Zatrzymaj aparat", startScan: "Uruchom skanowanie etapowe", stopScan: "Zatrzymaj skanowanie", noCamera: "Aparat nie jest uruchomiony.",
+          cameraDesc: "Włącz lub zatrzymaj aparat. O zgodę na dostęp pyta przeglądarka.",
+          scanDesc: "Skaner czeka na względny bezruch, rozpoznaje jedną klatkę, a następnie pokazuje kolejno obszary tekstu, wiersze, wyrazy i znaki.",
+          documentDesc: "Wybierz przewidywaną orientację dokumentu. Zmienia to ramkę pomocniczą, a nie fizyczny obrót telefonu.",
+          layoutDesc: "Ustal rozmieszczenie kamery i wyników OCR. Auto układa panele pionowo na wąskim ekranie i obok siebie na szerokim.",
+          uiLanguageDesc: "Zmień język interfejsu. Język OCR jest ustawiany niezależnie.",
+          ocrLanguageDesc: "Wybierz jeden lub więcej języków rozpoznawania. Dodatkowe modele mogą dłużej się ładować i zużywać więcej pamięci.",
+          layersDesc: "Wybierz widoczne ramki i dostosuj próg wykrywania ruchu.",
+          profileDesc: "Wybierz rodzaj skanowanego obiektu. W tym prototypie profil jest zapisywanym ustawieniem; specjalistyczne reguły analizy dodamy później.",
+          saveDesc: "Zapisz bieżący stabilny odczyt jako osobną obserwację. Powtarzające się wiersze będą oznaczone, a nie usunięte po cichu.",
+          savedDesc: "Eksportuj zapisane obserwacje albo wyczyść lokalną listę.", copyDesc: "Skopiuj bieżący rozpoznany tekst do schowka. Tekst pozostaje na tym urządzeniu, dopóki sam go nie udostępnisz.",
+          auto: "Auto", portrait: "Pionowa", landscape: "Pozioma", vertical: "Pionowy", horizontal: "Poziomy",
+          english: "English", polish: "Polski", receipt: "Paragon", flyer: "Ulotka", bookCover: "Okładka książki", bookText: "Treść książki", packaging: "Opakowanie", manual: "Instrukcja obsługi", bottle: "Etykieta butelki",
+          regions: "Obszary tekstu", lines: "Wiersze tekstu", words: "Wyrazy", symbols: "Znaki", motion: "Próg ruchu", guide: "Pokaż ramkę dokumentu",
+          confirmStartCamera: "Włączyć aparat? Jeśli będzie to potrzebne, przeglądarka poprosi o zgodę.", confirmStopCamera: "Zatrzymać strumień kamery na tym urządzeniu?",
+          savedEmpty: "Brak zapisanych fragmentów.", noReading: "Brak tekstu.", currentReading: "Bieżący wynik OCR", privacy: "Dostęp do aparatu wymaga zgody. OCR działa w przeglądarce po pobraniu biblioteki i danych językowych."
+        }
+      };
+
+      const tr = key => (I18N[uiLanguage] || I18N.en)[key] || I18N.en[key] || key;
+      const savedDomRefs = { popover: document.getElementById("popover"), backdrop: document.getElementById("popoverBackdrop"), title: document.getElementById("popoverTitle"), description: document.getElementById("popoverDescription"), body: document.getElementById("popoverBody"), footer: document.getElementById("popoverFooter") };
+
+      function setStatus(text) {
+        statusEl.textContent = translateStatus(String(text));
+        statusEl.title = String(text);
+      }
+
+      function translateStatus(text) {
+        const exact = {
+          "Gotowe. Włącz kamerę, potem rozpocznij skanowanie etapowe.": "Ready. Open Camera, then start staged scanning.",
+          "Oczekiwanie na zgodę i uruchamianie kamery…": "Waiting for permission and starting camera…",
+          "Kamera działa. Uruchom skanowanie etapowe.": "Camera is ready. Start staged scanning.",
+          "Kamera zatrzymana.": "Camera stopped.",
+          "Skanowanie zatrzymane.": "Scanning stopped.",
+          "Uruchamiam detektor ruchu… Połóż paragon w kadrze i unieruchom telefon.": "Motion detection started. Place the document in view and hold still.",
+          "Wykrywam względny bezruch…": "Waiting for the image to settle…",
+          "Obraz uspokoił się. Sprawdzam, czy pozostanie stabilny…": "Image settled. Checking stability…",
+          "Analiza wstrzymana do czasu uspokojenia obrazu.": "Analysis paused until the image settles.",
+          "Obraz stabilny. Ładuję OCR lub analizuję zamrożoną klatkę…": "Stable frame. Preparing OCR…",
+          "Pierwszy start: pobieram silnik OCR i model języka polskiego…": "First run: downloading OCR engine and Polish language data…",
+          "Analizuję stabilną klatkę OCR…": "Recognizing text in stable frame…",
+          "Odczyt ustabilizowany. Wszystkie poziomy ramek są widoczne; czekam na kolejny ruch.": "Reading stabilized. All box levels are visible; waiting for movement.",
+          "Klatka zmieniła się w trakcie rozpoznawania; odrzucam nieaktualne ramki.": "The scene changed during OCR; discarding stale boxes.",
+          "Ten identyczny fragment jest już zachowany — nie dodaję duplikatu.": "This exact fragment is already saved; no duplicate added.",
+          "Wyczyszczono zachowane fragmenty.": "Saved fragments cleared.",
+          "Nie wykryto tekstu w tej stabilnej klatce.": "No text detected in this stable frame.",
+          "Strona jest w tle. Wróć do niej, aby kontynuować wykrywanie stabilności.": "Page is in the background. Return to continue stability detection.",
+          "Wykryto ruch — ukrywam stare ramki, aby nie wskazywały złych miejsc. Czekam na bezruch…": "Motion detected. Hiding stale boxes and waiting for the image to settle…",
+          "Wykrywam względny bezruch…": "Waiting for the image to settle…",
+          "Obraz uspokoił się. Sprawdzam, czy pozostanie stabilny…": "Image settled. Checking stability…",
+          "Analiza wstrzymana do czasu uspokojenia obrazu.": "Analysis paused until the image settles.",
+          "Uruchamiam detektor ruchu… Połóż paragon w kadrze i unieruchom telefon.": "Motion detector started. Place the document in view and hold still.",
+          "Zapisano fragment jako osobną obserwację.": "Fragment saved as a separate observation.",
+          "Wyczyszczono zachowane fragmenty.": "Saved fragments cleared.",
+          "Loading OCR engine and language data…": "Ładowanie silnika OCR i danych językowych…",
+          "OCR language settings saved. The new configuration will be used on the next scan.": "Ustawienia języka OCR zapisano. Nowa konfiguracja zostanie użyta przy następnym skanowaniu.",
+          "Current OCR text copied.": "Skopiowano bieżący tekst OCR.",
+          "Clipboard access failed. Select the text and copy it manually.": "Nie można skorzystać ze schowka. Zaznacz tekst i skopiuj ręcznie.",
+          "Scanning stopped.": "Skanowanie zatrzymane."
+        };
+        if (uiLanguage === "pl") {
+          const reverse = Object.entries(exact).find(([source, translated]) => translated === text && source !== translated);
+          return reverse ? reverse[0] : text;
+        }
+        if (/^(Ready\.|Camera |Scanning |Waiting |Image |Stable frame|Loading OCR|Recognizing|Reading stabilized|The scene changed|Stage |Current OCR|OCR language settings|Camera error|OCR error|Motion detector error|Fragment saved|This exact fragment|Saved fragments|Clipboard|No text detected)/.test(text)) return text;
+        if (exact[text]) return exact[text];
+        const prefixes = [
+          ["Błąd kamery: ", "Camera error: "],
+          ["Błąd detektora ruchu: ", "Motion detector error: "],
+          ["Błąd OCR: ", "OCR error: "],
+          ["Zapisano fragment. ", "Fragment saved. "],
+          ["Zapisano fragment jako osobną obserwację.", "Fragment saved as a separate observation."],
+          ["Fragment jest zapisany do czasu zamknięcia strony, ale przeglądarka nie pozwoliła utrwalić go w pamięci lokalnej. Wyeksportuj TXT.", "The fragment is only in memory because local storage was unavailable. Export the text."]
+        ];
+        for (const [prefix, translated] of prefixes) if (text.startsWith(prefix)) return translated + text.slice(prefix.length);
+        const stageMatch = text.match(/^Etap ([1-4]\/4) — (.+?) — utrzymuję je, dopóki obraz pozostaje nieruchomy\.$/);
+        if (stageMatch) return `Stage ${stageMatch[1]} — ${["text regions", "text lines", "words", "characters"][Number(stageMatch[1][0])-1]} — holding while the image remains still.`;
+        if (text.startsWith("Etap ")) return text.replace("Etap", "Stage").replace("obszary tekstu", "text regions").replace("potencjalne teksty", "potential text").replace("wyrazy", "words").replace("znaki", "characters");
+        return text;
+      }
+
+      function applySettingsFromStorage() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
+          if (saved.uiLanguage === "en" || saved.uiLanguage === "pl") uiLanguage = saved.uiLanguage;
+          if (["auto", "portrait", "landscape"].includes(saved.documentOrientation)) documentOrientation = saved.documentOrientation;
+          if (["auto", "vertical", "horizontal"].includes(saved.uiLayout)) uiLayout = saved.uiLayout;
+          if (Array.isArray(saved.ocrLanguages)) selectedOcrLanguages = saved.ocrLanguages.filter(lang => ["eng", "pol"].includes(lang));
+          if (!selectedOcrLanguages.length) selectedOcrLanguages = ["pol"];
+          if (["receipt", "flyer", "book-cover", "book-text", "packaging", "manual", "bottle"].includes(saved.documentProfile)) documentProfile = saved.documentProfile;
+          if (saved.motionThreshold != null) motionThresholdInput.value = String(saved.motionThreshold);
+          if (saved.showRegions != null) showRegions.checked = !!saved.showRegions;
+          if (saved.showLines != null) showLines.checked = !!saved.showLines;
+          if (saved.showWords != null) showWords.checked = !!saved.showWords;
+          if (saved.showSymbols != null) showSymbols.checked = !!saved.showSymbols;
+          if (saved.showGuide != null) document.getElementById("cameraStage").dataset.guide = String(!!saved.showGuide);
+        } catch (_) { /* Ignore malformed local settings. */ }
+        thresholdValue.value = Number(motionThresholdInput.value).toLocaleString(uiLanguage === "pl" ? "pl-PL" : "en-US", { maximumFractionDigits: 1 });
+      }
+
+      function persistSettings() {
+        try {
+          localStorage.setItem(SETTINGS_KEY, JSON.stringify({ uiLanguage, documentOrientation, uiLayout, ocrLanguages: selectedOcrLanguages, documentProfile, motionThreshold: Number(motionThresholdInput.value), showRegions: showRegions.checked, showLines: showLines.checked, showWords: showWords.checked, showSymbols: showSymbols.checked, showGuide: document.getElementById("cameraStage").dataset.guide === "true" }));
+        } catch (_) { /* Settings are a convenience; scanning remains usable without local storage. */ }
+      }
+
+      function applyInterfaceSettings() {
+        document.documentElement.lang = uiLanguage;
+        document.body.dataset.uiLanguage = uiLanguage;
+        document.body.dataset.uiLayout = uiLayout;
+        document.body.dataset.documentOrientation = documentOrientation;
+        const stage = document.getElementById("cameraStage");
+        stage.dataset.documentOrientation = documentOrientation;
+        document.getElementById("privacyNote").textContent = tr("privacy");
+        document.getElementById("readingMeta").textContent = tr("currentReading");
+        document.getElementById("cameraMenuBtn").title = tr("camera");
+        document.getElementById("scanMenuBtn").title = tr("scan");
+        document.getElementById("documentMenuBtn").title = tr("document");
+        document.getElementById("layoutMenuBtn").title = tr("layout");
+        document.getElementById("uiLanguageBtn").title = tr("uiLanguage");
+        document.getElementById("uiLanguageBtn").textContent = uiLanguage === "pl" ? "🇵🇱" : "🇬🇧";
+        document.getElementById("ocrLanguageBtn").title = tr("ocrLanguage");
+        document.getElementById("ocrLanguageBtn").textContent = selectedOcrLanguages.length > 1 ? "A文" : selectedOcrLanguages[0] === "eng" ? "A" : "文";
+        document.getElementById("documentMenuBtn").classList.toggle("active", documentOrientation !== "auto");
+        document.getElementById("layoutMenuBtn").classList.toggle("active", uiLayout !== "auto");
+        document.getElementById("layersMenuBtn").title = tr("layers");
+        document.getElementById("profileMenuBtn").title = tr("profile");
+        document.getElementById("saveMenuBtn").title = tr("save");
+        document.getElementById("savedMenuBtn").title = tr("saved");
+        document.getElementById("closePopover").title = tr("close");
+        if (uiLanguage === "pl") {
+          statusEl.textContent = translateStatus(statusEl.title || "Gotowe. Włącz kamerę, potem rozpocznij skanowanie etapowe.");
+          if (!currentReading) currentLinesEl.innerHTML = '<p class="empty">Brak tekstu.</p>';
+        } else {
+          statusEl.textContent = translateStatus(statusEl.title || "Gotowe. Włącz kamerę, potem rozpocznij skanowanie etapowe.");
+          if (!currentReading) currentLinesEl.innerHTML = '<p class="empty">No text yet.</p>';
+        }
+        renderSavedObservations();
+        if (activePopover) openPopover(activePopover);
+      }
+
+      function openPopover(name) {
+        activePopover = name;
+        draftPopoverState = {};
+        savedDomRefs.body.replaceChildren();
+        savedDomRefs.footer.replaceChildren();
+        const titleKey = ({"ui-language":"uiLanguage", "ocr-language":"ocrLanguage"})[name] || name;
+        savedDomRefs.title.textContent = tr(titleKey);
+        savedDomRefs.description.textContent = tr(name === "ui-language" ? "uiLanguageDesc" : name === "ocr-language" ? "ocrLanguageDesc" : name === "camera" ? "cameraDesc" : name === "scan" ? "scanDesc" : name === "document" ? "documentDesc" : name === "layout" ? "layoutDesc" : name === "layers" ? "layersDesc" : name === "profile" ? "profileDesc" : name === "save" ? "saveDesc" : name === "saved" ? "savedDesc" : name === "copy" ? "copyDesc" : "layersDesc");
+        if (name === "camera") renderCameraPopover();
+        else if (name === "scan") renderScanPopover();
+        else if (name === "document") renderRadioPopover("documentOrientation", tr("document"), [{value:"auto",label:tr("auto")},{value:"portrait",label:tr("portrait")},{value:"landscape",label:tr("landscape")}], documentOrientation);
+        else if (name === "layout") renderRadioPopover("uiLayout", tr("layout"), [{value:"auto",label:tr("auto")},{value:"vertical",label:tr("vertical")},{value:"horizontal",label:tr("horizontal")}], uiLayout);
+        else if (name === "ui-language") renderRadioPopover("uiLanguage", tr("uiLanguage"), [{value:"en",label:"🇬🇧 English"},{value:"pl",label:"🇵🇱 Polski"}], uiLanguage);
+        else if (name === "ocr-language") renderOcrLanguagePopover();
+        else if (name === "layers") renderLayersPopover();
+        else if (name === "profile") renderProfilePopover();
+        else if (name === "save") renderSavePopover();
+        else if (name === "saved") renderSavedPopover();
+        else if (name === "copy") renderCopyPopover();
+        savedDomRefs.backdrop.hidden = false;
+        savedDomRefs.popover.hidden = false;
+        document.getElementById("closePopover").focus({preventScroll:true});
+      }
+
+      function closePopover() {
+        activePopover = null;
+        draftPopoverState = null;
+        savedDomRefs.popover.hidden = true;
+        savedDomRefs.backdrop.hidden = true;
+      }
+
+      function addChoice(name, value, label, type="radio", checked=false) {
+        const wrapper = document.createElement("label");
+        wrapper.className = "choice";
+        const input = document.createElement("input");
+        input.type = type; input.name = name; input.value = value; input.checked = checked;
+        input.dataset.setting = name;
+        wrapper.append(input, document.createTextNode(label));
+        savedDomRefs.body.appendChild(wrapper);
+      }
+
+      function addButton(parent, text, action, style="") {
+        const button = document.createElement("button");
+        button.type = "button"; button.className = "action-btn" + (style ? " " + style : "");
+        button.dataset.action = action; button.textContent = text;
+        parent.appendChild(button); return button;
+      }
+
+      function addApplyCancel() {
+        addButton(savedDomRefs.footer, tr("cancel"), "cancel");
+        addButton(savedDomRefs.footer, tr("apply"), "apply", "primary");
+      }
+
+      function renderCameraPopover() {
+        const active = !!stream;
+        savedDomRefs.description.textContent = tr("cameraDesc");
+        savedDomRefs.body.appendChild(makeNote(active ? (uiLanguage === "pl" ? "Aparat jest włączony." : "Camera is on.") : tr("noCamera")));
+        addButton(savedDomRefs.footer, active ? tr("stopCamera") : tr("startCamera"), active ? "stop-camera" : "start-camera", "primary");
+      }
+
+      function renderScanPopover() {
+        savedDomRefs.body.appendChild(makeNote(uiLanguage === "pl" ? "Tryb aktywny w tej wersji: etapowy OCR po wykryciu bezruchu." : "Mode available in this build: staged OCR after motion settles."));
+        addButton(savedDomRefs.footer, scanning ? tr("stopScan") : tr("startScan"), "toggle-scan", "primary");
+      }
+
+      function renderRadioPopover(setting, _label, options, value) {
+        options.forEach(option => addChoice(setting, option.value, option.label, "radio", option.value === value));
+        addApplyCancel();
+      }
+
+      function renderOcrLanguagePopover() {
+        addChoice("ocrLang", "eng", "English (eng)", "checkbox", selectedOcrLanguages.includes("eng"));
+        addChoice("ocrLang", "pol", "Polski (pol)", "checkbox", selectedOcrLanguages.includes("pol"));
+        savedDomRefs.body.appendChild(makeNote(uiLanguage === "pl" ? "Możesz wybrać jeden język lub oba. Zmiana zostanie użyta przy następnym skanowaniu." : "Choose one language or both. The change will take effect on the next scan."));
+        addApplyCancel();
+      }
+
+      function renderLayersPopover() {
+        addChoice("showRegions", "true", tr("regions"), "checkbox", showRegions.checked);
+        addChoice("showLines", "true", tr("lines"), "checkbox", showLines.checked);
+        addChoice("showWords", "true", tr("words"), "checkbox", showWords.checked);
+        addChoice("showSymbols", "true", tr("symbols"), "checkbox", showSymbols.checked);
+        addChoice("showGuide", "true", tr("guide"), "checkbox", document.getElementById("cameraStage").dataset.guide === "true");
+        const rangeWrap = document.createElement("label"); rangeWrap.className = "range-row";
+        const rangeLabel = document.createElement("span"); rangeLabel.textContent = tr("motion");
+        const range = document.createElement("input"); range.type="range"; range.min="3"; range.max="18"; range.step="0.5"; range.value=motionThresholdInput.value; range.dataset.setting="motionThreshold";
+        rangeWrap.append(rangeLabel, range); savedDomRefs.body.appendChild(rangeWrap);
+        addApplyCancel();
+      }
+
+      function renderProfilePopover() {
+        const options = [
+          ["receipt", tr("receipt")], ["flyer", tr("flyer")], ["book-cover", tr("bookCover")], ["book-text", tr("bookText")],
+          ["packaging", tr("packaging")], ["manual", tr("manual")], ["bottle", tr("bottle")]
+        ];
+        options.forEach(([value,label]) => addChoice("documentProfile", value, label, "radio", value === documentProfile));
+        savedDomRefs.body.appendChild(makeNote(tr("profileDesc")));
+        addApplyCancel();
+      }
+
+      function renderSavePopover() {
+        const hasText = !!currentReading?.text?.trim();
+        savedDomRefs.body.appendChild(makeNote(hasText ? (uiLanguage === "pl" ? "Podgląd: " : "Preview: ") + currentReading.text.slice(0, 260) : (uiLanguage === "pl" ? "Brak tekstu do zapisania. Najpierw uruchom OCR." : "Nothing to save yet. Run OCR first.")));
+        const button = addButton(savedDomRefs.footer, uiLanguage === "pl" ? "Zapisz fragment" : "Save fragment", "confirm-save", "primary");
+        button.disabled = !hasText;
+      }
+
+      function renderSavedPopover() {
+        savedDomRefs.body.appendChild(makeNote(savedObservations.length + (uiLanguage === "pl" ? " zapisanych fragmentów w tej przeglądarce." : " saved fragments in this browser.")));
+        addButton(savedDomRefs.footer, uiLanguage === "pl" ? "Eksportuj TXT" : "Export TXT", "export", "primary").disabled = !savedObservations.length;
+        addButton(savedDomRefs.footer, uiLanguage === "pl" ? "Wyczyść wszystko" : "Clear all", "clear-saved", "danger").disabled = !savedObservations.length;
+      }
+
+      function renderCopyPopover() {
+        const hasText = !!currentReading?.text;
+        savedDomRefs.body.appendChild(makeNote(hasText ? currentReading.text.slice(0, 320) : (uiLanguage === "pl" ? "Brak tekstu do skopiowania." : "No text to copy yet.")));
+        addButton(savedDomRefs.footer, uiLanguage === "pl" ? "Kopiuj tekst" : "Copy text", "copy-text", "primary").disabled = !hasText;
+      }
+
+      function makeNote(text) { const p=document.createElement("p"); p.className="popover-note"; p.textContent=text; return p; }
+
+      function updatePopoverDraft(event) {
+        const input = event.target;
+        if (!input?.dataset?.setting) return;
+        const setting = input.dataset.setting;
+        if (input.type === "checkbox" && setting === "ocrLang") {
+          const chosen = [...savedDomRefs.body.querySelectorAll('input[data-setting="ocrLang"]:checked')].map(el => el.value);
+          draftPopoverState.ocrLanguages = chosen;
+        } else if (input.type === "checkbox") {
+          draftPopoverState[setting] = input.checked;
+        } else {
+          draftPopoverState[setting] = input.value;
+        }
+        if (setting === "motionThreshold") document.getElementById("thresholdValue").value = Number(input.value).toLocaleString(uiLanguage === "pl" ? "pl-PL" : "en-US", {maximumFractionDigits:1});
+      }
+
+      async function handlePopoverAction(event) {
+        const button = event.target.closest("button[data-action]");
+        if (!button || button.disabled) return;
+        const action = button.dataset.action;
+        if (action === "cancel") { closePopover(); return; }
+        if (action === "apply") { applyPopoverDraft(); closePopover(); return; }
+        if (action === "start-camera") { closePopover(); await startCamera(); return; }
+        if (action === "stop-camera") { closePopover(); await stopCamera(); return; }
+        if (action === "toggle-scan") { closePopover(); if (scanning) stopScanning(uiLanguage === "pl" ? "Skanowanie zatrzymane." : "Scanning stopped."); else toggleScanning(); return; }
+        if (action === "confirm-save") { closePopover(); saveCurrentReading(); return; }
+        if (action === "copy-text") { closePopover(); copyCurrentReading(); return; }
+        if (action === "export") { closePopover(); exportSavedReadings(); return; }
+        if (action === "clear-saved") { closePopover(); clearSavedReadings(); return; }
+      }
+
+      function applyPopoverDraft() {
+        if (!activePopover) return;
+        const selectedRadio = savedDomRefs.body.querySelector("input[type=radio][data-setting]:checked");
+        if (activePopover === "document" && selectedRadio) {
+          documentOrientation = selectedRadio.value;
+          document.getElementById("cameraStage").dataset.guide = "true";
+        }
+        if (activePopover === "layout" && selectedRadio) uiLayout = selectedRadio.value;
+        if (activePopover === "ui-language" && selectedRadio) uiLanguage = selectedRadio.value;
+        if (activePopover === "profile" && selectedRadio) documentProfile = selectedRadio.value;
+        if (activePopover === "ocr-language") {
+          let languages = draftPopoverState.ocrLanguages;
+          if (!languages) languages = [...savedDomRefs.body.querySelectorAll('input[data-setting="ocrLang"]:checked')].map(el => el.value);
+          selectedOcrLanguages = [...new Set(languages)].filter(lang => ["eng", "pol"].includes(lang));
+          if (!selectedOcrLanguages.length) selectedOcrLanguages = ["pol"];
+        }
+        if (activePopover === "layers") {
+          const state = {};
+          savedDomRefs.body.querySelectorAll("input[data-setting]").forEach(input => {
+            if (input.dataset.setting === "motionThreshold") state.motionThreshold = input.value;
+            else state[input.dataset.setting] = input.checked;
+          });
+          if (state.showRegions != null) showRegions.checked = state.showRegions;
+          if (state.showLines != null) showLines.checked = state.showLines;
+          if (state.showWords != null) showWords.checked = state.showWords;
+          if (state.showSymbols != null) showSymbols.checked = state.showSymbols;
+          if (state.showGuide != null) document.getElementById("cameraStage").dataset.guide = String(state.showGuide);
+          if (state.motionThreshold != null) motionThresholdInput.value = state.motionThreshold;
+          thresholdValue.value = Number(motionThresholdInput.value).toLocaleString(uiLanguage === "pl" ? "pl-PL" : "en-US", {maximumFractionDigits:1});
+          drawOverlay(currentData);
+        }
+        applyInterfaceSettings();
+        persistSettings();
+        if (activePopover === "ocr-language") setStatus(uiLanguage === "pl" ? "Język OCR zapisany. Nowa konfiguracja zostanie użyta przy kolejnym skanowaniu." : "OCR language settings saved. The new configuration will be used on the next scan.");
+      }
+
+      async function copyCurrentReading() {
+        if (!currentReading?.text) return;
+        try {
+          await navigator.clipboard.writeText(currentReading.text);
+          setStatus(uiLanguage === "pl" ? "Skopiowano bieżący tekst OCR." : "Current OCR text copied.");
+        } catch (_) {
+          setStatus(uiLanguage === "pl" ? "Nie można skopiować automatycznie. Zaznacz tekst i skopiuj ręcznie." : "Clipboard access failed. Select the text and copy it manually.");
+        }
+      }
 
       async function startCamera() {
         try {
           if (!navigator.mediaDevices?.getUserMedia) {
             throw new Error("Ta przeglądarka nie udostępnia API kamery. Otwórz stronę przez HTTPS i poza osadzonym oknem innej aplikacji.");
           }
-          statusEl.textContent = "Oczekiwanie na zgodę i uruchamianie kamery…";
+          setStatus("Oczekiwanie na zgodę i uruchamianie kamery…");
           stream = await navigator.mediaDevices.getUserMedia({
             audio: false,
             video: {
@@ -274,9 +736,10 @@
           startCameraButton.disabled = true;
           toggleScanButton.disabled = false;
           stopCameraButton.disabled = false;
-          statusEl.textContent = "Kamera działa. Uruchom skanowanie etapowe.";
+          document.getElementById("cameraMenuBtn").classList.add("active");
+          setStatus("Kamera działa. Uruchom skanowanie etapowe.");
         } catch (error) {
-          statusEl.textContent = "Błąd kamery: " + (error.message || error.name);
+          setStatus("Błąd kamery: " + (error.message || error.name));
         }
       }
 
@@ -287,6 +750,7 @@
         }
         if (!stream) return;
         scanning = true;
+        document.getElementById("scanMenuBtn").classList.add("active");
         previousGray = null;
         stableSince = null;
         isMoving = false;
@@ -295,29 +759,30 @@
         stageRunId += 1;
         currentStageIndex = -1;
         clearOverlay();
-        toggleScanButton.textContent = "Zatrzymaj skanowanie etapowe";
-        statusEl.textContent = "Uruchamiam detektor ruchu… Połóż paragon w kadrze i unieruchom telefon.";
+        document.getElementById("scanMenuBtn").classList.add("active");
+        setStatus("Uruchamiam detektor ruchu… Połóż paragon w kadrze i unieruchom telefon.");
         phaseLabel.textContent = "Czekam na około 0,9 s względnego bezruchu przed analizą OCR.";
         stabilityMeter.value = 0;
-        stabilityLabel.textContent = "Stabilność obrazu: start";
-        motionLabel.textContent = "Ruch: kalibracja";
+        stabilityLabel.textContent = "STB START";
+        motionLabel.textContent = "MOV CAL";
         if (motionTimer) clearTimeout(motionTimer);
         motionTimer = setTimeout(motionTick, 120);
       }
 
       function stopScanning(message) {
         scanning = false;
+        document.getElementById("scanMenuBtn").classList.remove("active");
         stageRunId += 1;
         currentStageIndex = -1;
         if (motionTimer) clearTimeout(motionTimer);
         motionTimer = null;
-        toggleScanButton.textContent = "2. Uruchom skanowanie etapowe";
+        document.getElementById("scanMenuBtn").classList.remove("active");
         stabilityMeter.value = 0;
-        stabilityLabel.textContent = "Stabilność obrazu: —";
-        motionLabel.textContent = "Ruch: —";
+        stabilityLabel.textContent = "STB —";
+        motionLabel.textContent = "MOV —";
         phaseLabel.textContent = "Kolejność: obszary → wiersze tekstu → wyrazy → znaki.";
         clearOverlay();
-        if (message) statusEl.textContent = message;
+        if (message) setStatus(message);
       }
 
       async function stopCamera() {
@@ -325,6 +790,7 @@
         if (stream) stream.getTracks().forEach(track => track.stop());
         stream = null;
         video.srcObject = null;
+        document.getElementById("cameraMenuBtn").classList.remove("active");
         startCameraButton.disabled = false;
         toggleScanButton.disabled = true;
         stopCameraButton.disabled = true;
@@ -345,7 +811,7 @@
 
           if (previousGray) {
             score = meanDifference(gray, previousGray);
-            motionLabel.textContent = "Ruch: " + score.toFixed(1) + " / " + Number(motionThresholdInput.value).toFixed(1);
+            motionLabel.textContent = "MOV " + score.toFixed(1);
             const threshold = Number(motionThresholdInput.value);
 
             if (score > threshold) {
@@ -355,7 +821,7 @@
                 stageRunId += 1;
                 currentStageIndex = -1;
                 clearOverlay();
-                statusEl.textContent = "Wykryto ruch — ukrywam stare ramki, aby nie wskazywały złych miejsc. Czekam na bezruch…";
+                setStatus("Wykryto ruch — ukrywam stare ramki, aby nie wskazywały złych miejsc. Czekam na bezruch…");
                 phaseLabel.textContent = "Analiza wstrzymana do czasu uspokojenia obrazu.";
               }
               stableSince = null;
@@ -363,12 +829,12 @@
               if (isMoving || stableSince === null) {
                 isMoving = false;
                 stableSince = now;
-                statusEl.textContent = "Obraz uspokoił się. Sprawdzam, czy pozostanie stabilny…";
+                setStatus("Obraz uspokoił się. Sprawdzam, czy pozostanie stabilny…");
               }
             }
           } else {
             stableSince = now;
-            motionLabel.textContent = "Ruch: kalibracja";
+            motionLabel.textContent = "MOV CAL";
           }
           previousGray = gray;
 
@@ -376,18 +842,18 @@
             const stableFor = now - stableSince;
             const percent = Math.max(0, Math.min(100, stableFor / STABLE_MS * 100));
             stabilityMeter.value = percent;
-            stabilityLabel.textContent = "Stabilność obrazu: " + Math.min(stableFor / 1000, STABLE_MS / 1000).toFixed(1) + " / 0,9 s";
+            stabilityLabel.textContent = "STB " + Math.min(stableFor / 1000, STABLE_MS / 1000).toFixed(1) + "s";
             if (stableFor >= STABLE_MS && !scanInFlight && lastScannedRevision !== sceneRevision) {
               void scanStableFrame(sceneRevision);
             } else if (stableFor < STABLE_MS && !scanInFlight) {
-              statusEl.textContent = "Wykrywam względny bezruch…";
+              setStatus("Wykrywam względny bezruch…");
             }
           } else {
             stabilityMeter.value = 0;
-            stabilityLabel.textContent = "Stabilność obrazu: oczekiwanie";
+            stabilityLabel.textContent = "STB WAIT";
           }
         } catch (error) {
-          statusEl.textContent = "Błąd detektora ruchu: " + (error.message || error.name);
+          setStatus("Błąd detektora ruchu: " + (error.message || error.name));
         }
         motionTimer = setTimeout(motionTick, MOTION_POLL_MS);
       }
@@ -413,20 +879,27 @@
         capture.width = video.videoWidth;
         capture.height = video.videoHeight;
         capture.getContext("2d", { willReadFrequently: true }).drawImage(video, 0, 0);
-        statusEl.textContent = "Obraz stabilny. Ładuję OCR lub analizuję zamrożoną klatkę…";
+        setStatus("Obraz stabilny. Ładuję OCR lub analizuję zamrożoną klatkę…");
         phaseLabel.textContent = "OCR jest wykonywany na jednej klatce; kolejne poziomy będą odsłaniane stopniowo.";
         try {
+          const languageKey = selectedOcrLanguages.join("+");
+          if (worker && workerLanguageKey !== languageKey) {
+            await worker.terminate();
+            worker = null;
+            workerLanguageKey = null;
+          }
           if (!worker) {
-            statusEl.textContent = "Pierwszy start: pobieram silnik OCR i model języka polskiego…";
-            worker = await Tesseract.createWorker("pol");
+            setStatus("Loading OCR engine and language data…");
+            worker = await Tesseract.createWorker(languageKey);
+            workerLanguageKey = languageKey;
           }
           if (!scanning || revision !== sceneRevision || isMoving) return;
-          statusEl.textContent = "Analizuję stabilną klatkę OCR…";
+          setStatus("Analizuję stabilną klatkę OCR…");
           // Tesseract creates a full hierarchy (blocks, lines, words and symbols) in one job.
           // The UI reveals those levels in stages to avoid repeatedly running OCR on the same frame.
           const { data } = await worker.recognize(capture, {}, { blocks: true });
           if (!scanning || revision !== sceneRevision || isMoving) {
-            statusEl.textContent = "Klatka zmieniła się w trakcie rozpoznawania; odrzucam nieaktualne ramki.";
+            setStatus("Klatka zmieniła się w trakcie rozpoznawania; odrzucam nieaktualne ramki.");
             return;
           }
 
@@ -437,7 +910,7 @@
           saveReadingButton.disabled = !currentReading.text.trim();
           startStageSequence(data, revision);
         } catch (error) {
-          statusEl.textContent = "Błąd OCR: " + (error.message || error.name);
+          setStatus("Błąd OCR: " + (error.message || error.name));
         } finally {
           scanInFlight = false;
         }
@@ -478,7 +951,7 @@
             await sleep(STAGE_HOLD_MS);
           }
           if (scanning && runId === stageRunId && revision === sceneRevision && !isMoving) {
-            statusEl.textContent = "Odczyt ustabilizowany. Wszystkie poziomy ramek są widoczne; czekam na kolejny ruch.";
+            setStatus("Odczyt ustabilizowany. Wszystkie poziomy ramek są widoczne; czekam na kolejny ruch.");
             phaseLabel.textContent = "Pełna hierarchia: obszary → wiersze → wyrazy → znaki. Kolejny skan ruszy po poruszeniu obrazu i ponownym bezruchu.";
           }
         })();
@@ -487,7 +960,9 @@
       function showStage(index, data) {
         currentStageIndex = index;
         const stage = STAGES[index];
-        statusEl.textContent = stage.label + " — utrzymuję je, dopóki obraz pozostaje nieruchomy.";
+        setStatus(uiLanguage === "pl"
+          ? ["Etap 1/4 — obszary tekstu: utrzymuję, dopóki obraz jest nieruchomy.", "Etap 2/4 — wiersze tekstu: utrzymuję, dopóki obraz jest nieruchomy.", "Etap 3/4 — wyrazy: utrzymuję, dopóki obraz jest nieruchomy.", "Etap 4/4 — znaki: utrzymuję, dopóki obraz jest nieruchomy."][index]
+          : stage.label + " — holding while the image remains still.");
         phaseLabel.textContent = stage.phase;
         drawOverlay(data);
       }
@@ -565,7 +1040,7 @@
         if (!reading || !reading.lines.length) {
           const empty = document.createElement("p");
           empty.className = "empty";
-          empty.textContent = "Nie wykryto tekstu w tej stabilnej klatce.";
+          empty.textContent = uiLanguage === "pl" ? "Nie wykryto tekstu w tej stabilnej klatce." : "No text detected in this stable frame.";
           currentLinesEl.appendChild(empty);
         } else {
           reading.lines.forEach(line => {
@@ -577,13 +1052,13 @@
             if (line.confidence !== null) {
               const confidence = document.createElement("div");
               confidence.className = "confidence";
-              confidence.textContent = "Pewność OCR (orientacyjna): " + Math.round(line.confidence) + "%";
+              confidence.textContent = (uiLanguage === "pl" ? "Pewność OCR: " : "OCR confidence: ") + Math.round(line.confidence) + "%";
               item.appendChild(confidence);
             }
             currentLinesEl.appendChild(item);
           });
         }
-        readingInfoEl.textContent = "Ostatnia stabilna klatka: " + new Date(reading.createdAt).toLocaleTimeString("pl-PL") + ". Ten panel nie dopisuje kolejnych wersji przy każdej klatce.";
+        readingInfoEl.textContent = (uiLanguage === "pl" ? "Ostatnia stabilna klatka: " : "Last stable frame: ") + new Date(reading.createdAt).toLocaleTimeString();
       }
 
       function normalizeText(value) {
@@ -601,7 +1076,7 @@
         const keys = currentReading.lines.map(line => normalizeText(line.text)).filter(Boolean);
         const key = keys.join("\n");
         if (savedObservations.some(item => item.key === key)) {
-          statusEl.textContent = "Ten identyczny fragment jest już zachowany — nie dodaję duplikatu.";
+          setStatus(uiLanguage === "pl" ? "Ten identyczny fragment jest już zachowany — nie dodaję duplikatu." : "This exact fragment is already saved; no duplicate added.");
           return;
         }
 
@@ -621,9 +1096,9 @@
         persistSavedObservations();
         renderSavedObservations();
         if (overlapping.length) {
-          statusEl.textContent = "Zapisano fragment. " + overlapping.length + " wierszy powtarza się z wcześniejszymi odczytami; niczego automatycznie nie usuwam.";
+          setStatus("Zapisano fragment. " + overlapping.length + " wierszy powtarza się z wcześniejszymi odczytami; niczego automatycznie nie usuwam.");
         } else {
-          statusEl.textContent = "Zapisano fragment jako osobną obserwację.";
+          setStatus("Zapisano fragment jako osobną obserwację.");
         }
       }
 
@@ -641,19 +1116,19 @@
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(savedObservations));
         } catch (_) {
-          statusEl.textContent = "Fragment jest zapisany do czasu zamknięcia strony, ale przeglądarka nie pozwoliła utrwalić go w pamięci lokalnej. Wyeksportuj TXT.";
+          setStatus("Fragment jest zapisany do czasu zamknięcia strony, ale przeglądarka nie pozwoliła utrwalić go w pamięci lokalnej. Wyeksportuj TXT.");
         }
       }
 
       function renderSavedObservations() {
-        savedCountEl.textContent = savedObservations.length + (savedObservations.length === 1 ? " zapisany fragment" : " zapisanych fragmentów");
+        savedCountEl.textContent = savedObservations.length + (uiLanguage === "pl" ? (savedObservations.length === 1 ? " zapisany fragment" : " zapisanych fragmentów") : (savedObservations.length === 1 ? " saved fragment" : " saved fragments"));
         exportSavedButton.disabled = savedObservations.length === 0;
         clearSavedButton.disabled = savedObservations.length === 0;
         savedListEl.replaceChildren();
         if (!savedObservations.length) {
           const empty = document.createElement("p");
           empty.className = "empty";
-          empty.textContent = "Nie zapisano jeszcze żadnych fragmentów.";
+          empty.textContent = uiLanguage === "pl" ? "Nie zapisano jeszcze żadnych fragmentów." : "No saved fragments.";
           savedListEl.appendChild(empty);
           return;
         }
@@ -666,20 +1141,20 @@
           const title = document.createElement("div");
           title.className = "saved-title";
           const originalIndex = savedObservations.length - reversedIndex;
-          title.textContent = "Fragment " + originalIndex + " · " + new Date(observation.savedAt).toLocaleString("pl-PL");
+          title.textContent = (uiLanguage === "pl" ? "Fragment " : "Fragment ") + originalIndex + " · " + new Date(observation.savedAt).toLocaleString();
           head.appendChild(title);
           item.appendChild(head);
 
           if (observation.overlappingLines?.length) {
             const note = document.createElement("p");
             note.className = "saved-note";
-            note.textContent = "Możliwe nakładanie: " + observation.overlappingLines.length + " unikalnych wierszy występuje też we wcześniejszych fragmentach. Pełny tekst zachowano.";
+            note.textContent = uiLanguage === "pl" ? ("Możliwe nakładanie: " + observation.overlappingLines.length + " wierszy występuje też we wcześniejszych fragmentach. Pełny tekst zachowano.") : ("Possible overlap: " + observation.overlappingLines.length + " lines also occur in earlier fragments. Full text was kept.");
             item.appendChild(note);
           }
 
           const details = document.createElement("details");
           const summary = document.createElement("summary");
-          summary.textContent = "Pokaż tekst fragmentu";
+          summary.textContent = uiLanguage === "pl" ? "Pokaż tekst fragmentu" : "Show fragment text";
           const pre = document.createElement("pre");
           pre.textContent = observation.text;
           details.append(summary, pre);
@@ -691,7 +1166,7 @@
       function exportSavedReadings() {
         if (!savedObservations.length) return;
         const content = savedObservations.map((observation, index) => {
-          const timestamp = new Date(observation.savedAt).toLocaleString("pl-PL");
+          const timestamp = new Date(observation.savedAt).toLocaleString(uiLanguage === "pl" ? "pl-PL" : "en-US");
           const note = observation.overlappingLines?.length
             ? "[UWAGA: możliwe nakładanie z wcześniejszymi fragmentami: " + observation.overlappingLines.length + " wierszy]\n"
             : "";
@@ -709,17 +1184,22 @@
       }
 
       function clearSavedReadings() {
-        if (!window.confirm("Usunąć wszystkie zachowane fragmenty z tej przeglądarki? Warto najpierw wyeksportować TXT.")) return;
         savedObservations = [];
         try { localStorage.removeItem(STORAGE_KEY); } catch (_) { /* storage can be unavailable */ }
         renderSavedObservations();
-        statusEl.textContent = "Wyczyszczono zachowane fragmenty.";
+        setStatus("Wyczyszczono zachowane fragmenty.");
       }
 
       function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
       }
+
+      // Apply persisted preferences after translations and popover helpers have initialized.
+      applySettingsFromStorage();
+      applyInterfaceSettings();
+      renderSavedObservations();
     })();
+
   </script>
 </body>
 </html>
