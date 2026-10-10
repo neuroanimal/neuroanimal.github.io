@@ -2,5 +2,8 @@
   "name": "skill-bill-browser-ocr-prototype",
   "private": true,
   "type": "module",
-  "description": "No-build static camera OCR prototype with modular browser JavaScript"
+  "description": "No-build static camera OCR prototype with modular browser JavaScript",
+  "scripts": {
+    "test": "node tests/ocr.test.mjs && node tests/frame-capture.test.mjs && node tests/settings-migration.test.mjs"
+  }
 }

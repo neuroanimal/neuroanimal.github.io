@@ -30,13 +30,15 @@ body[data-ui-layout="horizontal"] .workspace { grid-template-columns: minmax(0,1
 .camera-stage[data-document-orientation="portrait"] #documentGuide { width: 47%; height: 84%; }
 .camera-stage[data-document-orientation="landscape"] #documentGuide { width: 84%; height: 55%; }
 .camera-stage[data-document-orientation="auto"] #documentGuide { width: 66%; height: 76%; }
-#penGuide {
+#scanGuide {
   display: none; position: absolute; z-index: 3; left: 50%; top: 50%; transform: translate(-50%,-50%);
-  width: 62%; height: 22%; border: 2px solid #00e5ff; border-radius: 7px;
-  box-shadow: 0 0 0 999px rgba(0,0,0,.13), 0 0 9px rgba(0,229,255,.4); pointer-events: none;
+  width: 62%; height: 5.5%; border: 2px solid #00e5ff; border-radius: 5px;
+  box-shadow: 0 0 0 999px rgba(0,0,0,.13), 0 0 9px rgba(0,229,255,.36); pointer-events: none;
 }
-#penGuide span { position: absolute; top: -4px; bottom: -4px; left: 50%; border-left: 1px dashed rgba(0,229,255,.6); }
-.camera-stage[data-mode="pen"] #penGuide { display: block; }
+#scanGuide span { position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; transform: translate(-50%,-50%); border: 1px solid rgba(255,255,255,.75); border-radius: 50%; background: rgba(0,229,255,.16); }
+.camera-stage[data-mode="pen"] #scanGuide { display: block; border-color: #00e5ff; }
+.camera-stage[data-mode="scanner"] #scanGuide { display: block; border-color: #ffd54f; border-style: dashed; box-shadow: 0 0 0 999px rgba(0,0,0,.13), 0 0 9px rgba(255,213,79,.28); }
+.camera-stage[data-mode="scanner"] #scanGuide span { border-color: rgba(255,213,79,.95); background: rgba(255,213,79,.16); }
 .status-panel {
   position: absolute; z-index: 4; left: 7px; right: 7px; bottom: 7px;
   height: 37px; padding: 5px 8px 5px;

@@ -23,6 +23,16 @@ export class CameraController {
     try {
       this.video.srcObject = stream;
       await this.video.play();
+      // Ask for continuous autofocus when the browser exposes it; unsupported devices ignore this.
+      try {
+        const track = stream.getVideoTracks?.()[0];
+        const capabilities = track?.getCapabilities?.();
+        if (capabilities?.focusMode?.includes?.("continuous")) {
+          await track.applyConstraints({ advanced: [{ focusMode: "continuous" }] });
+        }
+      } catch {
+        // Camera constraints vary across Safari, Chrome and device vendors; keep the working stream.
+      }
       this.stream = stream;
       this.callbacks.onChange?.(true);
       return stream;

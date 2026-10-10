@@ -1,4 +1,5 @@
-export const SETTINGS_KEY = "skill-bill-modular-settings-v2";
+export const SETTINGS_KEY = "skill-bill-modular-settings-v3";
+export const LEGACY_SETTINGS_KEY = "skill-bill-modular-settings-v2";
 export const STORAGE_KEY = "skill-bill-modular-observations-v2";
 export const DEFAULT_SETTINGS = Object.freeze({
   uiLanguage: "en",
@@ -8,13 +9,19 @@ export const DEFAULT_SETTINGS = Object.freeze({
   documentProfile: "receipt",
   scanMode: "auto",
   scope: "all",
-  motionThreshold: 14,
+  motionThreshold: 18,
   showRegions: true,
   showLines: true,
   showWords: true,
   showSymbols: true,
   showGuide: false,
-  stableMs: 1250
+  stableMs: 1000,
+  focusDelayMs: 500,
+  penWidthPct: 62,
+  penHeightPct: 5.5,
+  scannerWidthPct: 92,
+  scannerHeightPct: 11,
+  maxScanDurationSec: 0
 });
 
 export const MODES = Object.freeze([

@@ -7,17 +7,24 @@ export function captureFrame(video) {
   return canvas;
 }
 
-export function cropPenTarget(frame) {
-  // These normalized coordinates match the Pen reticle in the camera's visible image area.
-  const x = Math.round(frame.width * 0.19);
-  const y = Math.round(frame.height * 0.39);
-  const width = Math.round(frame.width * 0.62);
-  const height = Math.round(frame.height * 0.22);
+/** Crop a centered target from the camera frame; percentages are relative to the source image. */
+export function cropTarget(frame, widthPct, heightPct) {
+  const widthRatio = clamp(Number(widthPct) / 100, 0.1, 1);
+  const heightRatio = clamp(Number(heightPct) / 100, 0.02, 1);
+  const width = Math.max(1, Math.round(frame.width * widthRatio));
+  const height = Math.max(1, Math.round(frame.height * heightRatio));
+  const x = Math.round((frame.width - width) / 2);
+  const y = Math.round((frame.height - height) / 2);
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
   canvas.getContext("2d", { willReadFrequently: true }).drawImage(frame, x, y, width, height, 0, 0, width, height);
   return { canvas, offsetX: x, offsetY: y };
+}
+
+// Backwards-compatible helper for earlier prototypes.
+export function cropPenTarget(frame) {
+  return cropTarget(frame, 62, 5.5);
 }
 
 export function translateBoundingBoxes(data, xOffset, yOffset) {
@@ -33,3 +40,5 @@ export function translateBoundingBoxes(data, xOffset, yOffset) {
   };
   visit(data);
 }
+
+function clamp(value, min, max) { return Math.max(min, Math.min(max, Number.isFinite(value) ? value : min)); }

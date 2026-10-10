@@ -16,8 +16,8 @@ No Node build step is required. ES modules are loaded by the browser directly.
 - `js/main.js` — application orchestration and action wiring
 - `js/config.js`, `js/i18n.js` — settings schema, modes, scopes, translations
 - `js/core/camera.js` — camera lifecycle
-- `js/core/frame-capture.js` — full-frame capture, Pen crop and overlay-coordinate correction
-- `js/core/motion-detector.js` — lower-sensitivity motion detector and stillness trigger
+- `js/core/frame-capture.js` — full-frame capture, configurable centered Pen/Scanner crops and overlay-coordinate correction
+- `js/core/motion-detector.js` — lower-sensitivity motion detector, configurable stillness/focus settling, repeated movement-gated capture sessions
 - `js/core/settings-store.js` — local settings and saved observation storage
 - `js/core/exporter.js` — TXT/TSV/CSV export
 - `js/ocr/ocr-engine.js` — Tesseract worker lifecycle
@@ -30,10 +30,11 @@ No Node build step is required. ES modules are loaded by the browser directly.
 
 ## Current prototype behaviour
 
-- **Auto** reads one stable full frame.
-- **Scanner** appends successive full-frame readings; only adjacent suffix/prefix overlap is merged to avoid deleting legitimate repeated receipt rows.
-- **Pen** OCRs a central rectangular region and appends fragments; the OCR bounding boxes are shifted back to full-frame coordinates.
-- OCR automatically pauses after one capture and the staged overlay sequence. Start another capture after moving the document.
+- **Auto** reads one stable full frame, reveals the four overlay stages, then pauses.
+- **Scanner** reads a configurable wide, short strip (default 92% width × 11% height). It keeps running until manually paused or until an optional session time limit is reached.
+- **Pen** reads a thinner configurable central strip (default 62% width × 5.5% height) and appends fragments; OCR boxes are shifted back to full-frame coordinates.
+- In Scanner/Pen, each successful capture waits for movement before accepting another stable position, avoiding repeated appends of the same stationary frame. Motion is monitored during OCR so movements during processing are not ignored.
+- Motion threshold, stillness delay, extra focus-settling time, target widths/heights and optional session limit are configurable in the target/overlay/motion panel. A session limit of 0 means unlimited; Scanner/Pen can be stopped with the toolbar pause button.
 - Receipt text cleanup removes common trailing OCR debris (e.g. `|`, `|.`, `o:`), normalizes a terminal company suffix such as `S.A.`, and hides obvious low-confidence keyboard-key spillover in receipt mode.
 - Confidence is displayed left of each line: green `>=60%`, yellow `40–59%`, red `<40%`, with a zero-padded percentage.
 - Rough gaps are reconstructed from word bounding boxes; receipt amount-like suffixes are displayed on the right where detectable.
@@ -42,8 +43,8 @@ No Node build step is required. ES modules are loaded by the browser directly.
 
 ## Quick local checks
 
-Run `node tests/ocr.test.mjs` to verify OCR cleanup, receipt-price splitting, scope filters and adjacent-frame merging.
+Run `npm test` (or the three Node test files directly) to verify OCR cleanup/merging, target cropping geometry and migration of previous settings. No dependency install is required for these checks.
 
 ## Known limitations
 
-Receipt classification and field scoping are heuristic, not a certified fiscal parser. Pen is an experimental crop-based reader and does not yet track individual characters between captures. OCR language models and Tesseract.js are downloaded from the CDN, so first-run time and offline behaviour depend on browser cache and connectivity.
+Receipt classification and field scoping are heuristic, not a certified fiscal parser. Pen is an experimental crop-based reader and does not yet track individual characters between captures. Scanner/Pen work best when the user moves the receipt in short passes and briefly steadies the target; extremely fast continuous motion may still skip rows because OCR needs a sharp frame. OCR language models and Tesseract.js are downloaded from the CDN, so first-run time and offline behaviour depend on browser cache and connectivity.

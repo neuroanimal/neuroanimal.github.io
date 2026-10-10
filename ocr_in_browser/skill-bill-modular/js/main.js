@@ -8,7 +8,7 @@ import { OcrEngine } from "./ocr/ocr-engine.js";
 import { normalizeForComparison } from "./ocr/result-cleanup.js";
 import { filterLinesByScope } from "./ocr/receipt-scope.js";
 import { appendReading } from "./ocr/line-merger.js";
-import { captureFrame, cropPenTarget, translateBoundingBoxes } from "./core/frame-capture.js";
+import { captureFrame, cropTarget, translateBoundingBoxes } from "./core/frame-capture.js";
 import { OverlayRenderer } from "./ui/overlay-renderer.js";
 import { renderCurrentReading, renderSavedObservations } from "./ui/result-renderer.js";
 
@@ -36,6 +36,8 @@ let activePopover = null;
 let draft = null;
 let pendingScope = settings.scope || "all";
 let exportFormat = "txt";
+let scanLimitTimer = null;
+let frameMovedDuringCapture = false;
 
 const tr = (key) => translator(settings.uiLanguage)(key);
 
@@ -262,8 +264,14 @@ function renderLayerSettings() {
   addChoice("showWords", "true", tr("words"), "checkbox", Boolean(draft.showWords));
   addChoice("showSymbols", "true", tr("symbols"), "checkbox", Boolean(draft.showSymbols));
   addChoice("showGuide", "true", tr("guide"), "checkbox", Boolean(draft.showGuide));
-  addSettingRange("motionThreshold", tr("motion"), 7, 24, 0.5, draft.motionThreshold, Number(draft.motionThreshold).toFixed(1));
-  addSettingRange("stableMs", tr("stableTime"), 700, 2400, 100, draft.stableMs, `${(Number(draft.stableMs) / 1000).toFixed(1)} s`);
+  addSettingRange("motionThreshold", tr("motion"), 8, 30, 1, draft.motionThreshold, formatRangeValue("motionThreshold", draft.motionThreshold));
+  addSettingRange("stableMs", tr("stableTime"), 500, 3000, 100, draft.stableMs, formatRangeValue("stableMs", draft.stableMs));
+  addSettingRange("focusDelayMs", tr("focusDelay"), 0, 1800, 100, draft.focusDelayMs, formatRangeValue("focusDelayMs", draft.focusDelayMs));
+  addSettingRange("penWidthPct", tr("penWidth"), 35, 85, 1, draft.penWidthPct, formatRangeValue("penWidthPct", draft.penWidthPct));
+  addSettingRange("penHeightPct", tr("penHeight"), 3, 12, 0.5, draft.penHeightPct, formatRangeValue("penHeightPct", draft.penHeightPct));
+  addSettingRange("scannerWidthPct", tr("scannerWidth"), 70, 99, 1, draft.scannerWidthPct, formatRangeValue("scannerWidthPct", draft.scannerWidthPct));
+  addSettingRange("scannerHeightPct", tr("scannerHeight"), 6, 20, 0.5, draft.scannerHeightPct, formatRangeValue("scannerHeightPct", draft.scannerHeightPct));
+  addSettingRange("maxScanDurationSec", tr("maxScanDuration"), 0, 180, 15, draft.maxScanDurationSec, formatRangeValue("maxScanDurationSec", draft.maxScanDurationSec));
   addNote(tr("layersDesc"));
   addApplyCancel();
 }
@@ -297,6 +305,14 @@ function renderSavedMenu() {
   const clearButton = addButton(elements.popoverFooter, tr("clearSaved"), "clear-saved", "danger"); clearButton.disabled = savedObservations.length === 0;
 }
 
+function formatRangeValue(setting, value) {
+  const number = Number(value);
+  if (setting === "stableMs" || setting === "focusDelayMs") return `${(number / 1000).toFixed(1)} s`;
+  if (setting === "penWidthPct" || setting === "penHeightPct" || setting === "scannerWidthPct" || setting === "scannerHeightPct") return `${number.toFixed(number % 1 ? 1 : 0)}%`;
+  if (setting === "maxScanDurationSec") return number === 0 ? tr("unlimited") : `${number} s`;
+  return number.toFixed(1);
+}
+
 function updateDraftFromInput(event) {
   const input = event.target;
   if (!input?.dataset?.setting || !draft) return;
@@ -311,7 +327,7 @@ function updateDraftFromInput(event) {
     draft[setting] = input.value;
   }
   const output = elements.popoverBody.querySelector(`[data-output="${setting}"]`);
-  if (output) output.textContent = setting === "stableMs" ? `${(Number(input.value) / 1000).toFixed(1)} s` : Number(input.value).toFixed(1);
+  if (output) output.textContent = formatRangeValue(setting, input.value);
 }
 
 async function handlePopoverAction(event) {
@@ -351,8 +367,14 @@ function applyDraft() {
   Object.assign(settings, changes);
   if (previousMode !== settings.scanMode) scannerBuffer = null;
   settings.ocrLanguages = allowedLanguages.length ? allowedLanguages : ["pol"];
-  settings.motionThreshold = Math.max(7, Math.min(24, Number(settings.motionThreshold) || DEFAULT_SETTINGS.motionThreshold));
-  settings.stableMs = Math.max(700, Math.min(2400, Number(settings.stableMs) || DEFAULT_SETTINGS.stableMs));
+  settings.motionThreshold = clampNumber(settings.motionThreshold, 8, 30, DEFAULT_SETTINGS.motionThreshold);
+  settings.stableMs = clampNumber(settings.stableMs, 500, 3000, DEFAULT_SETTINGS.stableMs);
+  settings.focusDelayMs = clampNumber(settings.focusDelayMs, 0, 1800, DEFAULT_SETTINGS.focusDelayMs);
+  settings.penWidthPct = clampNumber(settings.penWidthPct, 35, 85, DEFAULT_SETTINGS.penWidthPct);
+  settings.penHeightPct = clampNumber(settings.penHeightPct, 3, 12, DEFAULT_SETTINGS.penHeightPct);
+  settings.scannerWidthPct = clampNumber(settings.scannerWidthPct, 70, 99, DEFAULT_SETTINGS.scannerWidthPct);
+  settings.scannerHeightPct = clampNumber(settings.scannerHeightPct, 6, 20, DEFAULT_SETTINGS.scannerHeightPct);
+  settings.maxScanDurationSec = clampNumber(settings.maxScanDurationSec, 0, 180, DEFAULT_SETTINGS.maxScanDurationSec);
   if (previousLanguage !== settings.uiLanguage) setStatus(tr(scanning ? "waitingStill" : camera.isOn ? "cameraReady" : "ready"));
   saveSettings(settings);
   overlay.setOptions({ showRegions: settings.showRegions, showLines: settings.showLines, showWords: settings.showWords, showSymbols: settings.showSymbols });
@@ -379,13 +401,17 @@ function updateImageGuides() {
   const centerX = imageLeft + imageWidth / 2;
   const centerY = imageTop + imageHeight / 2;
   const guide = $("documentGuide");
-  const pen = $("penGuide");
+  const target = $("scanGuide");
   guide.style.left = `${centerX}px`; guide.style.top = `${centerY}px`;
   const guideSize = settings.documentOrientation === "portrait" ? [0.47, 0.84] : settings.documentOrientation === "landscape" ? [0.84, 0.55] : [0.66, 0.76];
   guide.style.width = `${imageWidth * guideSize[0]}px`;
   guide.style.height = `${imageHeight * guideSize[1]}px`;
-  pen.style.left = `${centerX}px`; pen.style.top = `${centerY}px`;
-  pen.style.width = `${imageWidth * 0.62}px`; pen.style.height = `${imageHeight * 0.22}px`;
+  target.style.left = `${centerX}px`; target.style.top = `${centerY}px`;
+  const mode = settings.scanMode;
+  const targetWidth = mode === "scanner" ? settings.scannerWidthPct : settings.penWidthPct;
+  const targetHeight = mode === "scanner" ? settings.scannerHeightPct : settings.penHeightPct;
+  target.style.width = `${imageWidth * Number(targetWidth || 62) / 100}px`;
+  target.style.height = `${imageHeight * Number(targetHeight || (mode === "scanner" ? 11 : 5.5)) / 100}px`;
 }
 
 function startScanning() {
@@ -393,27 +419,54 @@ function startScanning() {
   if (scanning || scanInFlight) return;
   scanning = true;
   stageRunId += 1;
-  overlay.clear(); // Avoid stale boxes appearing to drift while the next capture is being framed.
+  if (scanLimitTimer) clearTimeout(scanLimitTimer);
+  scanLimitTimer = null;
+  overlay.clear();
   elements.stage.dataset.mode = settings.scanMode;
   applySettingsToDom();
   setStatus(tr("waitingStill"));
   elements.meter.value = 0; elements.stability.textContent = "STB —"; elements.motion.textContent = "MOV —";
+
+  const repeatingMode = settings.scanMode === "scanner" || settings.scanMode === "pen";
   detector.start(() => runOcrCapture(), {
+    repeatAfterMovement: repeatingMode,
     getThreshold: () => Number(settings.motionThreshold),
-    stableMs: Number(settings.stableMs || 1250),
-    onStatus: status => { if (scanning && !scanInFlight) setStatus(tr(status)); },
+    stableMs: Number(settings.stableMs ?? 1000),
+    captureDelayMs: Number(settings.focusDelayMs ?? 500),
+    onStatus: status => {
+      if (status === "moving" && repeatingMode) {
+        if (scanInFlight) frameMovedDuringCapture = true;
+        overlay.clear();
+      }
+      if (!scanning || scanInFlight) return;
+      setStatus(tr(status));
+    },
     onMetrics: metrics => {
       elements.motion.textContent = `MOV ${Number(metrics.score || 0).toFixed(1)}`;
       elements.meter.value = metrics.stablePercent;
-      elements.stability.textContent = `STB ${(metrics.stableFor / 1000).toFixed(1)}s`;
+      elements.stability.textContent = metrics.awaitingMovement
+        ? (settings.uiLanguage === "pl" ? "PRZESUŃ" : "MOVE")
+        : `STB ${(metrics.stableFor / 1000).toFixed(1)}s`;
     },
     onError: error => { setStatus(`${tr("unknown")}: ${error.message || error}`); pauseScanning(); }
   });
+
+  const durationSeconds = Number(settings.maxScanDurationSec || 0);
+  if (durationSeconds > 0) {
+    scanLimitTimer = setTimeout(() => {
+      if (scanning) {
+        pauseScanning();
+        setStatus(tr("scanLimitReached"));
+      }
+    }, durationSeconds * 1000);
+  }
 }
 
 function pauseScanning() {
   scanning = false;
   detector.stop();
+  if (scanLimitTimer) clearTimeout(scanLimitTimer);
+  scanLimitTimer = null;
   stageRunId += 1;
   elements.meter.value = 0;
   elements.stability.textContent = "STB —";
@@ -424,11 +477,18 @@ function pauseScanning() {
 async function runOcrCapture() {
   if (!scanning || !camera.isOn || scanInFlight) return;
   scanInFlight = true;
+  frameMovedDuringCapture = false;
   const runId = stageRunId;
+  const captureMode = settings.scanMode;
   try {
     setStatus(tr("loadingOcr"));
     const frame = captureFrame(elements.video);
-    const input = settings.scanMode === "pen" ? cropPenTarget(frame) : { canvas: frame, offsetX: 0, offsetY: 0 };
+    let input = { canvas: frame, offsetX: 0, offsetY: 0 };
+    if (captureMode === "pen") {
+      input = cropTarget(frame, settings.penWidthPct, settings.penHeightPct);
+    } else if (captureMode === "scanner") {
+      input = cropTarget(frame, settings.scannerWidthPct, settings.scannerHeightPct);
+    }
     const { data, reading } = await ocr.recognize(input.canvas, settings.ocrLanguages, {
       profile: settings.documentProfile,
       onProgress: message => {
@@ -436,18 +496,30 @@ async function runOcrCapture() {
       }
     });
     if (!scanning || runId !== stageRunId) return;
-    if (settings.scanMode === "pen" && (input.offsetX || input.offsetY)) translateBoundingBoxes(data, input.offsetX, input.offsetY);
+    if (input.offsetX || input.offsetY) translateBoundingBoxes(data, input.offsetX, input.offsetY);
     currentData = data;
-    currentReading = settings.scanMode === "auto" ? reading : appendReading(scannerBuffer, reading, settings.scanMode);
-    if (settings.scanMode !== "auto") scannerBuffer = currentReading;
+    currentReading = captureMode === "auto" ? reading : appendReading(scannerBuffer, reading, captureMode);
+    if (captureMode !== "auto") scannerBuffer = currentReading;
     renderCurrent();
-    overlay.setData(currentData, 0);
+    if (captureMode === "auto" || !frameMovedDuringCapture) {
+      overlay.setData(currentData, captureMode === "auto" ? 0 : STAGES.length - 1);
+    } else {
+      // Never display bounding boxes from an old frame over a camera position that moved during OCR.
+      overlay.clear();
+    }
     elements.saveReading.disabled = !currentReading.text.trim();
-    await revealStages(data, runId);
-    if (scanning && runId === stageRunId) {
-      pauseScanning();
-      setStatus(tr("scanDone"));
-      elements.stage.dataset.mode = settings.scanMode;
+
+    if (captureMode === "auto") {
+      await revealStages(data, runId);
+      if (scanning && runId === stageRunId) {
+        pauseScanning();
+        setStatus(tr("scanDone"));
+        elements.stage.dataset.mode = captureMode;
+      }
+    } else {
+      // Scanner/Pen are multi-pass sessions. OCR is triggered once per stable stop,
+      // then the detector waits for movement before accepting the next position.
+      setStatus(tr("scanAwaitMovement"));
     }
   } catch (error) {
     setStatus(`${tr("scanFailed")}: ${error.message || tr("unknown")}`);
@@ -458,7 +530,7 @@ async function runOcrCapture() {
 }
 
 async function revealStages(data, runId) {
-  const holdMs = settings.scanMode === "pen" ? 420 : 520;
+  const holdMs = 520;
   for (let index = 0; index < STAGES.length; index += 1) {
     if (!scanning || runId !== stageRunId) return;
     overlay.setStage(index);
@@ -536,4 +608,5 @@ elements.popoverFooter.addEventListener("click", event => {
   closePopover();
 });
 
+function clampNumber(value, min, max, fallback) { const number = Number(value); return Math.max(min, Math.min(max, Number.isFinite(number) ? number : fallback)); }
 function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
