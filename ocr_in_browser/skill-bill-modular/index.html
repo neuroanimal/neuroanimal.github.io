@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#171923">
+  <meta name="description" content="Compact browser-based live camera OCR prototype for receipts and documents.">
+  <title>Camera OCR</title>
+  <link rel="stylesheet" href="./css/tokens.css">
+  <link rel="stylesheet" href="./css/layout.css">
+  <link rel="stylesheet" href="./css/components.css">
+</head>
+<body data-ui-layout="auto" data-ui-language="en" data-document-orientation="auto">
+  <header class="appbar" aria-label="Main controls">
+    <nav class="toolbar" aria-label="Tools">
+      <button class="icon-btn" id="cameraMenuBtn" data-menu="camera" aria-label="Camera" title="Camera">◉</button>
+      <button class="icon-btn" id="modeMenuBtn" data-menu="mode" aria-label="Scan mode" title="Scan mode">◎</button>
+      <button class="icon-btn primary-tool" id="scanMenuBtn" data-menu="scan" aria-label="Start or pause OCR" title="Start or pause OCR">▶</button>
+      <button class="icon-btn" id="documentMenuBtn" data-menu="document" aria-label="Document orientation" title="Document orientation">▭</button>
+      <button class="icon-btn" id="layoutMenuBtn" data-menu="layout" aria-label="Interface layout" title="Interface layout">↔</button>
+      <button class="icon-btn" id="uiLanguageBtn" data-menu="ui-language" aria-label="Interface language" title="Interface language">🇬🇧</button>
+      <button class="icon-btn" id="ocrLanguageBtn" data-menu="ocr-language" aria-label="OCR language" title="OCR language">A文</button>
+      <button class="icon-btn" id="layersMenuBtn" data-menu="layers" aria-label="Overlay and motion settings" title="Overlay and motion settings">◫</button>
+      <button class="icon-btn" id="profileMenuBtn" data-menu="profile" aria-label="Document profile" title="Document profile">▤</button>
+      <button class="icon-btn" id="helpMenuBtn" data-menu="help" aria-label="Help" title="Help">?</button>
+      <span class="toolbar-spacer"></span>
+      <button class="icon-btn" id="savedMenuBtn" data-menu="saved" aria-label="Saved fragments and export" title="Saved fragments and export">⇩</button>
+    </nav>
+  </header>
+
+  <nav class="scope-bar" aria-label="OCR scope" id="scopeBar">
+    <span class="scope-caption" data-i18n="scope">Scope</span>
+    <button class="scope-btn active" data-scope="all" aria-pressed="true" title="All recognized text">◎</button>
+    <button class="scope-btn" data-scope="header" aria-pressed="false" title="Header">⌃</button>
+    <button class="scope-btn" data-scope="content" aria-pressed="false" title="Content">☷</button>
+    <button class="scope-btn" data-scope="footer" aria-pressed="false" title="Footer">⌄</button>
+    <button class="scope-btn" data-scope="nip" aria-pressed="false" title="NIP / tax ID">№</button>
+    <button class="scope-btn" data-scope="items" aria-pressed="false" title="Items and prices">▦</button>
+    <button class="scope-btn" data-scope="tax" aria-pressed="false" title="Tax / PTU">%</button>
+    <button class="scope-btn" data-scope="total" aria-pressed="false" title="Total">Σ</button>
+    <button class="scope-btn" data-scope="time" aria-pressed="false" title="Date and transaction time">◷</button>
+    <button class="scope-btn" data-scope="place" aria-pressed="false" title="Merchant / place">⌖</button>
+    <button class="scope-btn" data-scope="payment" aria-pressed="false" title="Payment">¤</button>
+  </nav>
+
+  <div class="popover-backdrop" id="popoverBackdrop" hidden></div>
+  <section class="popover" id="popover" role="dialog" aria-modal="true" aria-labelledby="popoverTitle" hidden>
+    <div class="popover-head">
+      <h2 class="popover-title" id="popoverTitle">Settings</h2>
+      <button class="small-icon-btn" id="closePopover" aria-label="Close" title="Close">×</button>
+    </div>
+    <p class="popover-description" id="popoverDescription"></p>
+    <div class="popover-body" id="popoverBody"></div>
+    <div class="popover-footer" id="popoverFooter"></div>
+  </section>
+
+  <main class="workspace">
+    <section class="camera-column" aria-label="Camera">
+      <div class="camera-stage" id="cameraStage" data-document-orientation="auto" data-guide="false">
+        <video id="camera" autoplay playsinline muted></video>
+        <canvas id="overlay" aria-hidden="true"></canvas>
+        <div id="documentGuide" aria-hidden="true"></div>
+        <div id="penGuide" aria-hidden="true"><span></span></div>
+        <section class="status-panel" aria-live="polite">
+          <p id="status" role="status">Ready</p>
+          <div class="meter-row"><span id="stabilityLabel">STB —</span><span id="motionLabel">MOV —</span></div>
+          <progress id="stabilityMeter" value="0" max="100"></progress>
+        </section>
+      </div>
+      <div class="camera-footline">
+        <span class="state-led" id="cameraLed" aria-hidden="true"></span>
+        <span id="cameraState">Camera off</span>
+        <span class="footline-spacer"></span>
+        <span id="modeState">Auto</span>
+        <span class="separator">·</span>
+        <span id="scopeState">All</span>
+      </div>
+    </section>
+
+    <section class="data-column" aria-label="OCR data">
+      <section class="panel reading-panel">
+        <div class="panel-head">
+          <span class="panel-symbol" aria-hidden="true">≋</span>
+          <span class="panel-meta" id="readingMeta">Current OCR result</span>
+          <span class="panel-count" id="lineCount">0</span>
+          <button class="small-icon-btn" id="copyReading" aria-label="Copy OCR text" title="Copy OCR text">⧉</button>
+          <button class="small-icon-btn danger" id="clearResults" aria-label="Clear current OCR results" title="Clear current OCR results">⌫</button>
+          <button class="small-icon-btn" id="saveReading" disabled aria-label="Save current OCR fragment" title="Save current OCR fragment">＋</button>
+        </div>
+        <div class="results-note" id="resultsNote" aria-live="polite">Waiting for a scan.</div>
+        <div id="currentLines" class="ocr-lines"><p class="empty">No text yet.</p></div>
+      </section>
+
+      <section class="panel saved-panel">
+        <div class="panel-head">
+          <span class="panel-symbol" aria-hidden="true">▣</span>
+          <span class="panel-meta" id="savedCount">0 saved fragments</span>
+          <button class="small-icon-btn" id="exportSaved" disabled aria-label="Export saved OCR text" title="Export saved OCR text">⇩</button>
+          <button class="small-icon-btn danger" id="clearSaved" disabled aria-label="Clear saved fragments" title="Clear saved fragments">⌫</button>
+        </div>
+        <div class="saved-content" id="savedList"><p class="empty">No saved fragments.</p></div>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "skill-bill-browser-ocr-prototype",
+  "private": true,
+  "type": "module",
+  "description": "No-build static camera OCR prototype with modular browser JavaScript"
+}
