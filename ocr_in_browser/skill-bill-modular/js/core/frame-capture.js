@@ -9,7 +9,7 @@ export function captureFrame(video) {
 
 /** Crop a centered target from the camera frame; percentages are relative to the source image. */
 export function cropTarget(frame, widthPct, heightPct) {
-  const widthRatio = clamp(Number(widthPct) / 100, 0.1, 1);
+  const widthRatio = clamp(Number(widthPct) / 100, 0.01, 1);
   const heightRatio = clamp(Number(heightPct) / 100, 0.02, 1);
   const width = Math.max(1, Math.round(frame.width * widthRatio));
   const height = Math.max(1, Math.round(frame.height * heightRatio));

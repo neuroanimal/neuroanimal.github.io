@@ -267,13 +267,14 @@ function renderLayerSettings() {
   addSettingRange("motionThreshold", tr("motion"), 8, 30, 1, draft.motionThreshold, formatRangeValue("motionThreshold", draft.motionThreshold));
   addSettingRange("stableMs", tr("stableTime"), 500, 3000, 100, draft.stableMs, formatRangeValue("stableMs", draft.stableMs));
   addSettingRange("focusDelayMs", tr("focusDelay"), 0, 1800, 100, draft.focusDelayMs, formatRangeValue("focusDelayMs", draft.focusDelayMs));
-  addSettingRange("penWidthPct", tr("penWidth"), 35, 85, 1, draft.penWidthPct, formatRangeValue("penWidthPct", draft.penWidthPct));
-  addSettingRange("penHeightPct", tr("penHeight"), 3, 12, 0.5, draft.penHeightPct, formatRangeValue("penHeightPct", draft.penHeightPct));
-  addSettingRange("scannerWidthPct", tr("scannerWidth"), 70, 99, 1, draft.scannerWidthPct, formatRangeValue("scannerWidthPct", draft.scannerWidthPct));
-  addSettingRange("scannerHeightPct", tr("scannerHeight"), 6, 20, 0.5, draft.scannerHeightPct, formatRangeValue("scannerHeightPct", draft.scannerHeightPct));
+  addSettingRange("penWidthPct", tr("penWidth"), 2, 35, 0.5, draft.penWidthPct, formatRangeValue("penWidthPct", draft.penWidthPct));
+  addSettingRange("penHeightPct", tr("penHeight"), 8, 60, 1, draft.penHeightPct, formatRangeValue("penHeightPct", draft.penHeightPct));
+  addSettingRange("scannerWidthPct", tr("scannerWidth"), 70, 100, 1, draft.scannerWidthPct, formatRangeValue("scannerWidthPct", draft.scannerWidthPct));
+  addSettingRange("scannerHeightPct", tr("scannerHeight"), 3, 25, 0.5, draft.scannerHeightPct, formatRangeValue("scannerHeightPct", draft.scannerHeightPct));
   addSettingRange("maxScanDurationSec", tr("maxScanDuration"), 0, 180, 15, draft.maxScanDurationSec, formatRangeValue("maxScanDurationSec", draft.maxScanDurationSec));
   addNote(tr("layersDesc"));
-  addApplyCancel();
+  addButton(elements.popoverFooter, tr("cancel"), "cancel");
+  addButton(elements.popoverFooter, tr("saveSettings"), "save-settings", "primary");
 }
 function renderProfileMenu() {
   PROFILES.forEach(profile => addChoice("documentProfile", profile.value, tr(profile.key), "radio", draft.documentProfile === profile.value));
@@ -335,7 +336,8 @@ async function handlePopoverAction(event) {
   if (!button) return;
   const action = button.dataset.action;
   if (action === "cancel") { closePopover(); return; }
-  if (action === "apply") { applyDraft(); closePopover(); return; }
+  if (action === "apply") { if (applyDraft()) closePopover(); return; }
+  if (action === "save-settings") { if (applyDraft()) closePopover(); return; }
   if (action === "apply-scope") {
     const selected = elements.popoverBody.querySelector('input[data-setting="pendingScope"]:checked');
     settings.scope = selected?.value || pendingScope || "all";
@@ -359,26 +361,38 @@ async function handlePopoverAction(event) {
 }
 
 function applyDraft() {
-  if (!draft) return;
+  if (!draft) return false;
   const previousMode = settings.scanMode;
   const previousLanguage = settings.uiLanguage;
   const allowedLanguages = (draft.ocrLanguages || settings.ocrLanguages).filter(language => ["eng", "pol"].includes(language));
   const { pendingScope: _pendingScope, exportFormat: _format, ...changes } = draft;
-  Object.assign(settings, changes);
+  const nextSettings = { ...settings, ...changes };
+  nextSettings.ocrLanguages = allowedLanguages.length ? allowedLanguages : ["pol"];
+  nextSettings.motionThreshold = clampNumber(nextSettings.motionThreshold, 8, 30, DEFAULT_SETTINGS.motionThreshold);
+  nextSettings.stableMs = clampNumber(nextSettings.stableMs, 500, 3000, DEFAULT_SETTINGS.stableMs);
+  nextSettings.focusDelayMs = clampNumber(nextSettings.focusDelayMs, 0, 1800, DEFAULT_SETTINGS.focusDelayMs);
+  nextSettings.penWidthPct = clampNumber(nextSettings.penWidthPct, 2, 35, DEFAULT_SETTINGS.penWidthPct);
+  nextSettings.penHeightPct = clampNumber(nextSettings.penHeightPct, 8, 60, DEFAULT_SETTINGS.penHeightPct);
+  nextSettings.scannerWidthPct = clampNumber(nextSettings.scannerWidthPct, 70, 100, DEFAULT_SETTINGS.scannerWidthPct);
+  nextSettings.scannerHeightPct = clampNumber(nextSettings.scannerHeightPct, 3, 25, DEFAULT_SETTINGS.scannerHeightPct);
+  nextSettings.maxScanDurationSec = clampNumber(nextSettings.maxScanDurationSec, 0, 180, DEFAULT_SETTINGS.maxScanDurationSec);
+
+  // Persist first. Do not close the panel or silently pretend settings were saved
+  // when this browser refuses localStorage writes.
+  if (!saveSettings(nextSettings)) {
+    setStatus(tr("settingsSaveFailed"));
+    return false;
+  }
+
+  Object.assign(settings, nextSettings);
   if (previousMode !== settings.scanMode) scannerBuffer = null;
-  settings.ocrLanguages = allowedLanguages.length ? allowedLanguages : ["pol"];
-  settings.motionThreshold = clampNumber(settings.motionThreshold, 8, 30, DEFAULT_SETTINGS.motionThreshold);
-  settings.stableMs = clampNumber(settings.stableMs, 500, 3000, DEFAULT_SETTINGS.stableMs);
-  settings.focusDelayMs = clampNumber(settings.focusDelayMs, 0, 1800, DEFAULT_SETTINGS.focusDelayMs);
-  settings.penWidthPct = clampNumber(settings.penWidthPct, 35, 85, DEFAULT_SETTINGS.penWidthPct);
-  settings.penHeightPct = clampNumber(settings.penHeightPct, 3, 12, DEFAULT_SETTINGS.penHeightPct);
-  settings.scannerWidthPct = clampNumber(settings.scannerWidthPct, 70, 99, DEFAULT_SETTINGS.scannerWidthPct);
-  settings.scannerHeightPct = clampNumber(settings.scannerHeightPct, 6, 20, DEFAULT_SETTINGS.scannerHeightPct);
-  settings.maxScanDurationSec = clampNumber(settings.maxScanDurationSec, 0, 180, DEFAULT_SETTINGS.maxScanDurationSec);
   if (previousLanguage !== settings.uiLanguage) setStatus(tr(scanning ? "waitingStill" : camera.isOn ? "cameraReady" : "ready"));
-  saveSettings(settings);
+  else setStatus(tr("settingsSaved"));
   overlay.setOptions({ showRegions: settings.showRegions, showLines: settings.showLines, showWords: settings.showWords, showSymbols: settings.showSymbols });
+  // Synchronize the draft before the panel is re-rendered by applySettingsToDom().
+  draft = { ...settings, ocrLanguages: [...settings.ocrLanguages], pendingScope: settings.scope, exportFormat };
   applySettingsToDom();
+  return true;
 }
 
 function closePopover() {

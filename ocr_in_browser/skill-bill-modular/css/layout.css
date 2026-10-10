@@ -32,7 +32,7 @@ body[data-ui-layout="horizontal"] .workspace { grid-template-columns: minmax(0,1
 .camera-stage[data-document-orientation="auto"] #documentGuide { width: 66%; height: 76%; }
 #scanGuide {
   display: none; position: absolute; z-index: 3; left: 50%; top: 50%; transform: translate(-50%,-50%);
-  width: 62%; height: 5.5%; border: 2px solid #00e5ff; border-radius: 5px;
+  width: 5.5%; height: 22%; border: 2px solid #00e5ff; border-radius: 5px;
   box-shadow: 0 0 0 999px rgba(0,0,0,.13), 0 0 9px rgba(0,229,255,.36); pointer-events: none;
 }
 #scanGuide span { position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; transform: translate(-50%,-50%); border: 1px solid rgba(255,255,255,.75); border-radius: 50%; background: rgba(0,229,255,.16); }
