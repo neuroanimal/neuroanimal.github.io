@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NeuroAnimal - projects, live demos and source code</title>
+<meta name="description" content="Portfolio of NeuroAnimal: AI, OCR, NLP, data analysis and automation projects - live demos, documentation and source code.">
+<meta property="og:title" content="NeuroAnimal - projects, live demos and source code">
+<meta property="og:description" content="AI, OCR, NLP, data analysis and automation projects.">
+<meta property="og:image" content="https://neuroanimal.github.io/assets/thumbs/paleoscript.webp">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237cc4ff'/%3E%3Cstop offset='1' stop-color='%23b39dff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Ctext x='16' y='22' font-family='Segoe UI,Arial' font-size='16' font-weight='700' text-anchor='middle' fill='%230f1216'%3ENA%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #0f1216; --fg: #e8eaed; --muted: #9aa3ad; --accent: #7cc4ff; --accent2: #b39dff;
+    --row: rgba(255,255,255,.035); --row-hover: rgba(124,196,255,.08); --none: #59616b;
+    --tile: linear-gradient(135deg, rgba(124,196,255,.18), rgba(179,157,255,.18));
+    --shadow: 0 1px 2px rgba(0,0,0,.4);
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #f7f8fa; --fg: #1d2127; --muted: #5d6670; --accent: #0b5cad; --accent2: #6a3fc8;
+            --row: rgba(0,0,0,.025); --row-hover: rgba(11,92,173,.07); --none: #a7adb4;
+            --tile: linear-gradient(135deg, rgba(11,92,173,.12), rgba(106,63,200,.12));
+            --shadow: 0 1px 3px rgba(0,0,0,.15); }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font: 16px/1.55 "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif; }
+  body::before { content: ""; position: fixed; inset: -20vh -10vw auto auto; width: 60vw; height: 60vh; z-index: -1;
+                 background: radial-gradient(closest-side, rgba(124,196,255,.10), transparent); pointer-events: none; }
+  main { max-width: 1120px; margin: 0 auto; padding: 3.5rem 1.25rem 4rem; }
+  header { display: flex; align-items: center; gap: 1.2rem; }
+  .logo { width: 64px; height: 64px; flex: none; border-radius: 18px; display: grid; place-items: center;
+          background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--bg);
+          font-weight: 800; font-size: 1.6rem; letter-spacing: -.03em; box-shadow: var(--shadow); }
+  header h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0; letter-spacing: -.02em; line-height: 1.1;
+              background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text;
+              background-clip: text; color: transparent; }
+  header p { color: var(--muted); max-width: 46rem; margin: .3rem 0 0; font-size: 1.05rem; }
+  h2 { display: flex; align-items: center; gap: .5rem; font-size: .8rem; text-transform: uppercase;
+       letter-spacing: .14em; color: var(--muted); margin: 3rem 0 .6rem; font-weight: 600; }
+  h2 svg { width: 18px; height: 18px; color: var(--accent); }
+  svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  table { width: 100%; border-collapse: separate; border-spacing: 0 .5rem; }
+  td { padding: .8rem 1rem; vertical-align: middle; background: var(--row); border: 0; }
+  tr td:first-child { border-radius: 14px 0 0 14px; }
+  tr td:last-child { border-radius: 0 14px 14px 0; }
+  tbody tr { transition: background .15s; }
+  tbody tr:hover td, tbody tr:focus-within td { background: var(--row-hover); }
+  td.vis { width: 152px; padding-right: 0; }
+  .thumb { display: block; width: 136px; height: 85px; border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); }
+  .thumb img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left;
+               transition: transform .25s; }
+  tbody tr:hover .thumb img { transform: scale(1.06); }
+  .icon-tile { display: grid; place-items: center; background: var(--tile); color: var(--accent); }
+  .icon-tile svg { width: 38px; height: 38px; stroke-width: 1.5; }
+  .name { font-weight: 650; font-size: 1.05rem; }
+  .desc { color: var(--muted); font-size: .92rem; margin-top: .15rem; }
+  .tags { margin-top: .35rem; font-size: .75rem; color: var(--muted); letter-spacing: .02em; }
+  td.link { width: 9.2rem; white-space: nowrap; }
+  td.link svg { width: 16px; height: 16px; margin-right: .35rem; vertical-align: -3px; }
+  a { color: var(--accent); text-decoration: none; font-weight: 550; }
+  a:hover, a:focus-visible { text-decoration: underline; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  .multi a { display: inline-block; margin-right: .55rem; font-weight: 500; font-size: .9rem; }
+  .none { color: var(--none); }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+             clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  footer { margin-top: 3.5rem; color: var(--muted); font-size: .9rem; }
+  footer svg { width: 18px; height: 18px; vertical-align: -4px; margin-right: .35rem; }
+  @media (prefers-reduced-motion: reduce) { tbody tr, .thumb img { transition: none; } tbody tr:hover .thumb img { transform: none; } }
+  @media (max-width: 760px) {
+    header { align-items: flex-start; }
+    .logo { width: 48px; height: 48px; font-size: 1.2rem; border-radius: 14px; }
+    table, tbody, tr, td { display: block; width: 100%; }
+    thead { display: none; }
+    tr { margin-bottom: .7rem; background: var(--row); border-radius: 14px; overflow: hidden; }
+    td { background: transparent !important; padding: .35rem 1rem; border-radius: 0 !important; }
+    td.vis { width: 100%; padding: 0 0 .5rem; }
+    .thumb { width: 100%; height: auto; aspect-ratio: 16 / 7; border-radius: 0; box-shadow: none; }
+    .icon-tile { aspect-ratio: auto; height: 72px; }
+    td.link { width: auto; display: inline-block; vertical-align: top; padding-right: .4rem; }
+    td.link:nth-child(3) { padding-left: 1rem; }
+    td.link:last-child { padding-bottom: .9rem; }
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+@@SPRITE@@
+</svg>
+<main>
+<header>
+  <div class="logo" aria-hidden="true">NA</div>
+  <div>
+    <h1>NeuroAnimal</h1>
+    <p>AI, OCR, NLP, data analysis and automation - projects with live demos, documentation and source code.</p>
+  </div>
+</header>
+
+<!-- Each project is one row: preview | what it is | live demo | documentation | source. "—" = not available.
+     Generated by tools/portfolio/build_index.py from the project list in that script - edit the list there,
+     not this file. Screenshots live in assets/thumbs/ (480x300 WebP). -->
+
+@@SECTIONS@@
+
+<footer>
+  <a href="https://github.com/neuroanimal"><svg aria-hidden="true"><use href="#i-github"/></svg>github.com/neuroanimal</a>
+</footer>
+</main>
+</body>
+</html>
