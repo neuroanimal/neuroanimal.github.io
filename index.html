@@ -1,5 +1,235 @@
-<pre>
-<center>
-<a href="virus/sars2">Diagrams showing spread of SARS2 virus in Poland</a>
-</center>
-</pre>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NeuroAnimal - projects, live demos and source code</title>
+<meta name="description" content="Portfolio of NeuroAnimal: AI, OCR, NLP, data analysis and automation projects - live demos, documentation and source code.">
+<style>
+  :root {
+    --bg: #0f1216; --fg: #e8eaed; --muted: #9aa3ad; --accent: #7cc4ff; --accent2: #b39dff;
+    --row: rgba(255,255,255,.035); --row-hover: rgba(124,196,255,.08); --none: #59616b;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #f7f8fa; --fg: #1d2127; --muted: #5d6670; --accent: #0b5cad; --accent2: #6a3fc8;
+            --row: rgba(0,0,0,.025); --row-hover: rgba(11,92,173,.07); --none: #a7adb4; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font: 16px/1.55 "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif; }
+  main { max-width: 1080px; margin: 0 auto; padding: 3.5rem 1.25rem 4rem; }
+  header h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0; letter-spacing: -.02em;
+              background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text;
+              background-clip: text; color: transparent; }
+  header p { color: var(--muted); max-width: 46rem; margin: .6rem 0 0; font-size: 1.05rem; }
+  h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .14em; color: var(--muted);
+       margin: 3rem 0 .6rem; font-weight: 600; }
+  table { width: 100%; border-collapse: separate; border-spacing: 0 .45rem; }
+  td { padding: .9rem 1rem; vertical-align: middle; background: var(--row); border: 0; }
+  tr td:first-child { border-radius: 12px 0 0 12px; }
+  tr td:last-child { border-radius: 0 12px 12px 0; }
+  tbody tr { transition: background .15s; }
+  tbody tr:hover td, tbody tr:focus-within td { background: var(--row-hover); }
+  .name { font-weight: 650; font-size: 1.05rem; }
+  .desc { color: var(--muted); font-size: .92rem; margin-top: .15rem; }
+  .tags { margin-top: .35rem; font-size: .75rem; color: var(--muted); letter-spacing: .02em; }
+  td.link { width: 9.5rem; white-space: nowrap; }
+  a { color: var(--accent); text-decoration: none; font-weight: 550; }
+  a:hover, a:focus-visible { text-decoration: underline; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  .multi a { display: inline-block; margin-right: .55rem; font-weight: 500; font-size: .9rem; }
+  .none { color: var(--none); }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+             clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  footer { margin-top: 3.5rem; color: var(--muted); font-size: .85rem; }
+  @media (max-width: 760px) {
+    table, tbody, tr, td { display: block; width: 100%; }
+    thead { display: none; }
+    tr { margin-bottom: .6rem; background: var(--row); border-radius: 12px; }
+    td { background: transparent !important; padding: .35rem 1rem; border-radius: 0 !important; }
+    td:first-child { padding-top: .9rem; }
+    td:last-child { padding-bottom: .9rem; }
+    td.link { width: auto; display: inline-block; vertical-align: top; padding-right: .4rem; }
+    td.link:nth-child(2) { padding-left: 1rem; }
+  }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>NeuroAnimal</h1>
+  <p>AI, OCR, NLP, data analysis and automation - projects with live demos, documentation and source code.</p>
+</header>
+
+<!-- Each project is one row: what it is | live demo | documentation | source. "—" = not available. -->
+
+<section aria-labelledby="apps">
+<h2 id="apps">Applications &amp; tools</h2>
+<table>
+<thead class="sr-only"><tr><th scope="col">Project</th><th scope="col">Live demo</th><th scope="col">Documentation</th><th scope="col">Source code</th></tr></thead>
+<tbody>
+<tr>
+  <td><div class="name">Paleoscript</div>
+      <div class="desc">Medieval broad-nib handwriting generator (LOGO-style pen) and scan analysis for Polona manuscripts.</div>
+      <div class="tags">TypeScript · canvas · image analysis</div></td>
+  <td class="link"><a href="https://neuroanimal.github.io/paleoscript/">Live demo</a></td>
+  <td class="link"><a href="https://github.com/neuroanimal/paleoscript#readme">Docs</a></td>
+  <td class="link"><a href="https://github.com/neuroanimal/paleoscript">Source</a></td>
+</tr>
+<tr>
+  <td><div class="name">cvscore - CV Scoring Engine</div>
+      <div class="desc">Explainable scoring of CVs, cover letters and job offers (PL/EN) without LLMs: 62 metrics, InDesign-aware PDF extraction with OCR, recruiter screening verdict, calibration on real outcomes.</div>
+      <div class="tags">Python · PyMuPDF · Tesseract · scikit-learn · BM25 · NLP</div></td>
+  <td class="link"><a href="https://neuroanimal.github.io/candidate-score/">Demo reports</a></td>
+  <td class="link"><a href="https://github.com/neuroanimal/candidate-score/tree/main/cv-scoring-system#readme">Docs</a></td>
+  <td class="link"><a href="https://github.com/neuroanimal/candidate-score">Source</a></td>
+</tr>
+<tr>
+  <td><div class="name">Camera OCR in the browser</div>
+      <div class="desc">No-build, modular camera OCR: staged overlays, pen/scanner modes, receipt-oriented cleanup and line accumulation (Tesseract.js).</div>
+      <div class="tags">JavaScript · ES modules · Tesseract.js · camera API</div></td>
+  <td class="link"><a href="https://neuroanimal.github.io/ocr_in_browser/skill-bill-modular/">Live demo</a></td>
+  <td class="link"><a href="https://github.com/neuroanimal/neuroanimal.github.io/tree/master/ocr_in_browser/skill-bill-modular#readme">Docs</a></td>
+  <td class="link"><a href="https://github.com/neuroanimal/neuroanimal.github.io/tree/master/ocr_in_browser/skill-bill-modular">Source</a></td>
+</tr>
+<tr>
+  <td><div class="name">Sequential OCR scanner (prototype)</div>
+      <div class="desc">Earlier single-page prototype of the camera scanner.</div>
+      <div class="tags">JavaScript · Tesseract.js</div></td>
+  <td class="link"><a href="https://neuroanimal.github.io/ocr_in_browser/camera-test/">Live demo</a></td>
+  <td class="link"><span class="none" aria-label="no documentation">—</span></td>
+  <td class="link"><a href="https://github.com/neuroanimal/neuroanimal.github.io/tree/master/ocr_in_browser/camera-test">Source</a></td>
+</tr>
+<tr>
+  <td><div class="name">AI Platform</div>
+      <div class="desc">Modular, extensible AI / DS / ML platform: traditional and modern AI, NLP, OCR, ML, DL, LLM, GenAI, agents.</div>
+      <div class="tags">Python · architecture</div></td>
+  <td class="link"><span class="none" aria-label="no live demo">—</span></td>
+  <td class="link"><a href="https://github.com/neuroanimal/ai_platform#readme">Docs</a></td>
+  <td class="link"><a href="https://github.com/neuroanimal/ai_platform">Source</a></td>
+</tr>
+<tr>
+  <td><div class="name">OCR Platform</div>
+      <div class="desc">Cross-platform OCR application (work in progress).</div>
+      <div class="tags">Flutter · Dart</div></td>
+  <td class="link"><span class="none" aria-label="no live demo">—</span></td>
+  <td class="link"><span class="none" aria-label="no documentation">—</span></td>
+  <td class="link"><a href="https://github.com/neuroanimal/neuroanimal.github.io/tree/master/ocr_platform">Source</a></td>
+</tr>
+<tr>
+  <td><div class="name">OTA App Test</div>
+      <div class="desc">Over-the-air update test application.</div>
+      <div class="tags">C++ · Flutter</div></td>
+  <td class="link"><span class="none" aria-label="no live demo">—</span></td>
+  <td class="link"><a href="https://neuroanimal.github.io/test_ota_app/">Docs</a></td>
+  <td class="link"><a href="https://github.com/neuroanimal/test_ota_app">Source</a></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<section aria-labelledby="data">
+<h2 id="data">Data analysis &amp; dashboards</h2>
+<table>
+<thead class="sr-only"><tr><th scope="col">Project</th><th scope="col">Live demo</th><th scope="col">Documentation</th><th scope="col">Source code</th></tr></thead>
+<tbody>
+<tr>
+  <td><div class="name">Inflation in Poland</div>
+      <div class="desc">GUS and NBP data pipeline with the same dashboard built in six visualisation libraries.</div>
+      <div class="tags">Python · Plotly · Altair · Bokeh · Great Tables · D3.js</div>
+      <div class="multi"><a href="https://neuroanimal.github.io/finance/inflation/report/dashboard_01_plotly_kaleido.html">Plotly</a><a href="https://neuroanimal.github.io/finance/inflation/report/dashboard_03_altair.html">Altair</a><a href="https://neuroanimal.github.io/finance/inflation/report/dashboard_04_bokeh.html">Bokeh</a><a href="https://neuroanimal.github.io/finance/inflation/report/dashboard_05_great_tables_summary.html">Great Tables</a><a href="https://neuroanimal.github.io/finance/inflation/report/dashboard_05_great_tables_segments.html">Segments</a><a href="https://neuroanimal.github.io/finance/inflation/report/dashboard_08_d3_js.html">D3.js</a></div></td>
+  <td class="link"><a href="https://neuroanimal.github.io/finance/inflation/report/dashboard_08_d3_js.html">Live demo</a></td>
+  <td class="link"><span class="none" aria-label="no documentation">—</span></td>
+  <td class="link"><a href="https://github.com/neuroanimal/neuroanimal.github.io/tree/master/finance/inflation">Source</a></td>
+</tr>
+<tr>
+  <td><div class="name">Fuel prices vs Brent oil and USD/PLN</div>
+      <div class="desc">Brent crude, exchange rate, retail vs wholesale diesel prices and margin analysis.</div>
+      <div class="tags">Python · Plotly · pandas</div></td>
+  <td class="link"><a href="https://neuroanimal.github.io/war/us_ir/">Live demo</a></td>
+  <td class="link"><span class="none" aria-label="no documentation">—</span></td>
+  <td class="link"><a href="https://github.com/neuroanimal/neuroanimal.github.io/tree/master/war">Source</a></td>
+</tr>
+<tr>
+  <td><div class="name">Iris - exploratory data analysis report</div>
+      <div class="desc">Reproducible analytical report (Polish).</div>
+      <div class="tags">Quarto · Python</div></td>
+  <td class="link"><a href="https://neuroanimal.github.io/markdown/PA07/iris_report.html">Live demo</a></td>
+  <td class="link"><span class="none" aria-label="no documentation">—</span></td>
+  <td class="link"><a href="https://github.com/neuroanimal/neuroanimal.github.io/tree/master/markdown">Source</a></td>
+</tr>
+<tr>
+  <td><div class="name">SARS-CoV-2 in Poland, Feb-Apr 2020</div>
+      <div class="desc">Diagrams of tests, cases, recoveries and deaths: cumulative values, daily velocity and acceleration.</div>
+      <div class="tags">data analysis · charts</div></td>
+  <td class="link"><a href="https://neuroanimal.github.io/virus/sars2/">Live demo</a></td>
+  <td class="link"><span class="none" aria-label="no documentation">—</span></td>
+  <td class="link"><a href="https://github.com/neuroanimal/neuroanimal.github.io/tree/master/virus">Source</a></td>
+</tr>
+<tr>
+  <td><div class="name">Blood groups and population genetics</div>
+      <div class="desc">ABO / Rh allele frequencies against Global25 PCA population averages.</div>
+      <div class="tags">Python · pandas · matplotlib</div></td>
+  <td class="link"><span class="none" aria-label="no live demo">—</span></td>
+  <td class="link"><span class="none" aria-label="no documentation">—</span></td>
+  <td class="link"><a href="https://github.com/neuroanimal/neuroanimal.github.io/tree/master/gen/blood">Source</a></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<section aria-labelledby="notes">
+<h2 id="notes">Experiments &amp; notes</h2>
+<table>
+<thead class="sr-only"><tr><th scope="col">Project</th><th scope="col">Live demo</th><th scope="col">Documentation</th><th scope="col">Source code</th></tr></thead>
+<tbody>
+<tr>
+  <td><div class="name">Neural networks from basics</div>
+      <div class="desc">Activation and loss functions, tensors, training loops.</div>
+      <div class="tags">Python · PyTorch</div></td>
+  <td class="link"><span class="none" aria-label="no live demo">—</span></td>
+  <td class="link"><span class="none" aria-label="no documentation">—</span></td>
+  <td class="link"><a href="https://github.com/neuroanimal/neuroanimal.github.io/tree/master/nn">Source</a></td>
+</tr>
+<tr>
+  <td><div class="name">OCR with PyTorch</div>
+      <div class="desc">OCR model notebook on an insurance-document dataset.</div>
+      <div class="tags">Python · PyTorch</div></td>
+  <td class="link"><span class="none" aria-label="no live demo">—</span></td>
+  <td class="link"><span class="none" aria-label="no documentation">—</span></td>
+  <td class="link"><a href="https://github.com/neuroanimal/neuroanimal.github.io/tree/master/ocr">Source</a></td>
+</tr>
+<tr>
+  <td><div class="name">LLM agents</div>
+      <div class="desc">Experiments with the OpenAI API and Google ADK agents.</div>
+      <div class="tags">Python · LLM · agents</div></td>
+  <td class="link"><span class="none" aria-label="no live demo">—</span></td>
+  <td class="link"><span class="none" aria-label="no documentation">—</span></td>
+  <td class="link"><a href="https://github.com/neuroanimal/neuroanimal.github.io/tree/master/agent">Source</a></td>
+</tr>
+<tr>
+  <td><div class="name">Visualisation of ML functions</div>
+      <div class="desc">Seaborn plots and LaTeX figures of regression loss functions.</div>
+      <div class="tags">Python · seaborn · LaTeX</div></td>
+  <td class="link"><span class="none" aria-label="no live demo">—</span></td>
+  <td class="link"><span class="none" aria-label="no documentation">—</span></td>
+  <td class="link"><a href="https://github.com/neuroanimal/neuroanimal.github.io/tree/master/visual">Source</a></td>
+</tr>
+<tr>
+  <td><div class="name">Notebook code extractor</div>
+      <div class="desc">Extracts code cells from Jupyter notebooks into scripts.</div>
+      <div class="tags">Bash</div></td>
+  <td class="link"><span class="none" aria-label="no live demo">—</span></td>
+  <td class="link"><span class="none" aria-label="no documentation">—</span></td>
+  <td class="link"><a href="https://github.com/neuroanimal/neuroanimal.github.io/tree/master/ipynb2py">Source</a></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<footer>
+  <a href="https://github.com/neuroanimal">github.com/neuroanimal</a>
+</footer>
+</main>
+</body>
+</html>

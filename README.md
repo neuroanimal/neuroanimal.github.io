@@ -1,5 +1,8 @@
 # neuroanimal.github.io
 
-[![Main Page](https://img.shields.io/badge/Main_Page-blue)](https://neuroanimal.github.io/)
-[![2020.04.20 SARS2 Trend](https://img.shields.io/badge/2020.04.20:_SARS2_Trend-8A2BE2)](https://neuroanimal.github.io/virus/sars2)
+Portfolio home page: **https://neuroanimal.github.io/**. Every project is listed with a live demo,
+its documentation and its source code.
 
+Demos published from this repository live in sub-folders (`ocr_in_browser/`, `finance/`, `war/`,
+`markdown/`, `virus/`). Projects with their own repository publish their own GitHub Pages site and
+are linked from `index.html`.
